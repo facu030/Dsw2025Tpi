@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Domain.Entities
 {
-    internal class Customer : EntityBase
+    public class Customer : EntityBase
     {
         public string? Name { get; set; }
         public string? Email { get; set; }

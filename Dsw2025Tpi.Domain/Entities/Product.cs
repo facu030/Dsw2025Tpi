@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Domain.Entities
 {
-    internal class Product : EntityBase
+    public class Product : EntityBase
     {
         public Product() { }
 
