@@ -40,7 +40,7 @@ namespace Dsw2025Tpi.Application.Services
             {
                 throw new ArgumentException("Valores para el producto no válidos");
             }
-            
+
             var exist = await _productRepository.First<Product>(p => p.Sku == request.Sku || p.InternalCode == request.InternalCode);
             if (exist != null) throw new ArgumentException("Ya existe un producto con el mismo SKU o código interno");
             var product = new Product(request.Sku, request.InternalCode, request.Name, request.Description, request.CurrentUnitPrice, request.StockQuantity);
@@ -49,5 +49,36 @@ namespace Dsw2025Tpi.Application.Services
 
         }
 
+        public async Task<ProductModel.Response> UpdateProduct(ProductModel.Request request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Sku) ||
+            string.IsNullOrWhiteSpace(request.Name) ||
+            string.IsNullOrWhiteSpace(request.InternalCode) ||
+            request.CurrentUnitPrice < 0 || request.StockQuantity < 0)
+            {
+                throw new ArgumentException("Valores para el producto no válidos");
+            }
+
+            var product = await _productRepository.First<Product>(p => p.Sku == request.Sku);
+            if (product == null) throw new ArgumentException("No existe un producto con el SKU especificado");
+            product.InternalCode = request.InternalCode;
+            product.Name = request.Name;
+            product.Description = request.Description;
+            product.CurrentUnitPrice = request.CurrentUnitPrice;
+            product.StockQuantity = request.StockQuantity;
+            await _productRepository.Update(product);
+            return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
+
+        }
+
+        public async Task<ProductModel.Response> DisableProduct(Guid id)
+        {
+            var product = await _productRepository.GetById<Product>(id);
+            if (product == null) throw new ArgumentException("No existe un producto con el ID especificado");
+            product.IsActive = false;
+            await _productRepository.Update(product);
+            return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
+
+        }
     }
 }
