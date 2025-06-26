@@ -30,6 +30,7 @@ public class Program
             options.UseSeeding((c, t) =>
             {
                 ((Dsw2025TpiContext)c).Seedwork<Product>("Sources\\products.json");
+                ((Dsw2025TpiContext)c).Seedwork<Product>("Sources\\customers.json");
             });
         });
         builder.Services.AddScoped<IRepository, EfRepository>();

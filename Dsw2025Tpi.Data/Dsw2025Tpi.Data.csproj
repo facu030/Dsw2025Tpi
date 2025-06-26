@@ -7,29 +7,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Sources\customers.json" />
-    <None Remove="Sources\products.json" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Sources\customers.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Sources\products.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Dsw2025Tpi.Domain\Dsw2025Tpi.Domain.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Dsw2025Tpi.Domain\Dsw2025Tpi.Domain.csproj" />
+	<ItemGroup>
+	<None Update="Sources\categories.json">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	</None>
+	<None Update="Sources\products.json">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	</None>
   </ItemGroup>
 
 </Project>
