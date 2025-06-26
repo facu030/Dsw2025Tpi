@@ -1,0 +1,82 @@
+[
+  {
+    "sku": "ABC123",
+    "internalCode": "INT-001",
+    "name": "Monitor LED 24\"",
+    "description": "Monitor Full HD con panel IPS y entradas HDMI y VGA.",
+    "currentUnitPrice": 199.99,
+    "stockQuantity": 50
+  },
+  {
+    "sku": "DEF456",
+    "internalCode": "INT-002",
+    "name": "Teclado Mecánico RGB",
+    "description": "Teclado mecánico con retroiluminación RGB y switches rojos.",
+    "currentUnitPrice": 89.99,
+    "stockQuantity": 120
+  },
+  {
+    "sku": "GHI789",
+    "internalCode": "INT-003",
+    "name": "Mouse Gamer",
+    "description": "Mouse óptico de alta precisión con 6 botones programables.",
+    "currentUnitPrice": 39.99,
+    "stockQuantity": 200
+  },
+  {
+    "sku": "JKL012",
+    "internalCode": "INT-004",
+    "name": "Disco SSD 1TB",
+    "description": "Unidad de estado sólido de 1TB con interfaz SATA III.",
+    "currentUnitPrice": 129.99,
+    "stockQuantity": 75
+  },
+  {
+    "sku": "MNO345",
+    "internalCode": "INT-005",
+    "name": "Memoria RAM 16GB",
+    "description": "Memoria DDR4 de 16GB a 3200MHz.",
+    "currentUnitPrice": 69.99,
+    "stockQuantity": 100
+  },
+  {
+    "sku": "PQR678",
+    "internalCode": "INT-006",
+    "name": "Placa Madre ATX",
+    "description": "Placa madre compatible con procesadores Intel de 12va gen.",
+    "currentUnitPrice": 159.99,
+    "stockQuantity": 40
+  },
+  {
+    "sku": "STU901",
+    "internalCode": "INT-007",
+    "name": "Fuente de Poder 650W",
+    "description": "Fuente certificada 80+ Bronze con ventilador silencioso.",
+    "currentUnitPrice": 89.00,
+    "stockQuantity": 65
+  },
+  {
+    "sku": "VWX234",
+    "internalCode": "INT-008",
+    "name": "Gabinete ATX",
+    "description": "Gabinete con ventana lateral de vidrio templado y RGB frontal.",
+    "currentUnitPrice": 74.50,
+    "stockQuantity": 55
+  },
+  {
+    "sku": "YZA567",
+    "internalCode": "INT-009",
+    "name": "Refrigeración Líquida",
+    "description": "Sistema de refrigeración líquida para CPU con radiador de 240mm.",
+    "currentUnitPrice": 110.00,
+    "stockQuantity": 35
+  },
+  {
+    "sku": "BCD890",
+    "internalCode": "INT-010",
+    "name": "Tarjeta Gráfica RTX 3060",
+    "description": "Tarjeta gráfica NVIDIA RTX 3060 con 12GB GDDR6.",
+    "currentUnitPrice": 379.99,
+    "stockQuantity": 25
+  }
+]

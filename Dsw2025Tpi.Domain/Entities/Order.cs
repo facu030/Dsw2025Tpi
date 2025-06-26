@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Domain.Entities
 {
-    public class Order
+    public class Order : EntityBase
     {
         public DateTime Date { get; set; }
         public string? ShippingAddress { get; set; }

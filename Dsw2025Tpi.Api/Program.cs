@@ -1,6 +1,12 @@
 
 using Dsw2025Tpi.Application.Services;
+using Dsw2025Tpi.Data;
+using Dsw2025Tpi.Data.Helpers;
 using Dsw2025Tpi.Data.Repositories;
+using Dsw2025Tpi.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Metrics;
+using System;
 using Dsw2025Tpi.Domain.Interfaces;
 
 namespace Dsw2025Tpi.Api;
@@ -18,9 +24,16 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddHealthChecks();
-
+        builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiEntities"));
+            options.UseSeeding((c, t) =>
+            {
+                ((Dsw2025TpiContext)c).Seedwork<Product>("Sources\\products.json");
+            });
+        });
         builder.Services.AddScoped<IRepository, EfRepository>();
-        builder.Services.AddTransient<ProductManagementService>();
+        builder.Services.AddTransient<ProductsManagementService>();
 
         var app = builder.Build();
 

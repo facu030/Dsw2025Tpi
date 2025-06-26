@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Application.Services
 {
-    public class ProductManagementService
+    public class ProductsManagementService
     {
         private readonly IRepository _productRepository;
-        public ProductManagementService(IRepository productRepository)
+        public ProductsManagementService(IRepository productRepository)
         {
             _productRepository = productRepository;
         }
@@ -25,7 +25,7 @@ namespace Dsw2025Tpi.Application.Services
                 null;
         }
 
-        public async Task<IEnumerable<ProductModel.Response>?> GetAllProducts()
+        public async Task<IEnumerable<ProductModel.Response>?> GetProducts()
         {
             var products = await _productRepository.GetFiltered<Product>(p => p.IsActive);
             return products?.Select(p => new ProductModel.Response(p.Id, p.Sku, p.InternalCode, p.Name, p.Description, p.CurrentUnitPrice, p.StockQuantity));
