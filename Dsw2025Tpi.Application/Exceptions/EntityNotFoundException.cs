@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dsw2025Tpi.Application.Exceptions
+namespace Dsw2025Tpi.Application.Exceptions;
+
+public class EntityNotFoundException : ApplicationException
 {
-    internal class EntityNotFoundException
+    public EntityNotFoundException(string message) : base(message)
     {
     }
+
 }
