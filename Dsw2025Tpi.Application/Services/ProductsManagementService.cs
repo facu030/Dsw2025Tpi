@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dsw2025Tpi.Application.Exceptions;
 
 namespace Dsw2025Tpi.Application.Services
 {
@@ -42,14 +43,14 @@ namespace Dsw2025Tpi.Application.Services
             }
 
             var exist = await _productRepository.First<Product>(p => p.Sku == request.Sku || p.InternalCode == request.InternalCode);
-            if (exist != null) throw new ArgumentException("Ya existe un producto con el mismo SKU o código interno");
+            if (exist != null) throw new DuplicatedEntityException("Ya existe un producto con el mismo SKU o código interno");
             var product = new Product(request.Sku, request.InternalCode, request.Name, request.Description, request.CurrentUnitPrice, request.StockQuantity);
             await _productRepository.Add(product);
             return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
 
         }
 
-        public async Task<ProductModel.Response> UpdateProduct(ProductModel.Request request)
+        public async Task<ProductModel.Response> UpdateProduct(Guid id, ProductModel.Request request)
         {
             if (string.IsNullOrWhiteSpace(request.Sku) ||
             string.IsNullOrWhiteSpace(request.Name) ||
@@ -58,23 +59,35 @@ namespace Dsw2025Tpi.Application.Services
             {
                 throw new ArgumentException("Valores para el producto no válidos");
             }
-
-            var product = await _productRepository.First<Product>(p => p.Sku == request.Sku);
-            if (product == null) throw new ArgumentException("No existe un producto con el SKU especificado");
-            product.InternalCode = request.InternalCode;
-            product.Name = request.Name;
-            product.Description = request.Description;
-            product.CurrentUnitPrice = request.CurrentUnitPrice;
-            product.StockQuantity = request.StockQuantity;
-            await _productRepository.Update(product);
-            return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
+            var product = await _productRepository.GetById<Product>(id);
+            if (product == null)
+            {
+                throw new EntityNotFoundException("No existe un producto con el Id especificado");
+            }
+            if (product.Sku != request.Sku ||
+            product.InternalCode != request.InternalCode ||
+            product.Name != request.Name ||
+            product.Description != request.Description ||
+            product.CurrentUnitPrice != request.CurrentUnitPrice ||
+            product.StockQuantity != request.StockQuantity)
+            {
+                product.Sku = request.Sku;
+                product.InternalCode = request.InternalCode;
+                product.Name = request.Name;
+                product.Description = request.Description;
+                product.CurrentUnitPrice = request.CurrentUnitPrice;
+                product.StockQuantity = request.StockQuantity;
+                await _productRepository.Update(product);
+                return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
+            }
+            throw new ArgumentException("No se han modificado los valores del producto");
 
         }
 
         public async Task<ProductModel.Response> DisableProduct(Guid id)
         {
             var product = await _productRepository.GetById<Product>(id);
-            if (product == null) throw new ArgumentException("No existe un producto con el ID especificado");
+            if (product == null) throw new EntityNotFoundException("No existe un producto con el ID especificado");
             product.IsActive = false;
             await _productRepository.Update(product);
             return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);

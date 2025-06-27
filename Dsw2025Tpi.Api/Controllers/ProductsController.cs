@@ -1,4 +1,5 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
+using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +26,10 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductBySku(Guid id)
+        public async Task<IActionResult> GetProductById(Guid id)
         {
             var product = await _service.GetProductById(id);
-            if (product == null) return NotFound();
+            if (product == null) return NotFound($"No se encontró producto con el id {id}");
             return Ok(product);
         }
 
@@ -38,15 +39,15 @@ namespace Dsw2025Tpi.Api.Controllers
             try
             {
                 var product = await _service.AddProduct(request);
-                return Ok(product);
+                return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
             }
             catch (ArgumentException ae)
             {
                 return BadRequest(ae.Message);
             }
-            catch (ApplicationException de)
+            catch (DuplicatedEntityException de)
             {
-                return Conflict(de.Message);
+                return BadRequest(de.Message);
             }
             catch (Exception)
             {
@@ -54,21 +55,21 @@ namespace Dsw2025Tpi.Api.Controllers
             }
         }
 
-        [HttpPut()]
-        public async Task<IActionResult> UpdateProduct([FromBody] ProductModel.Request request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.Request request)
         {
             try
             {
-                var product = await _service.UpdateProduct(request);
+                var product = await _service.UpdateProduct(id, request);
                 return Ok(product);
             }
             catch (ArgumentException ae)
             {
                 return BadRequest(ae.Message);
             }
-            catch (ApplicationException de)
+            catch (EntityNotFoundException nf)
             {
-                return Conflict(de.Message);
+                return NotFound(nf.Message);
             }
             catch (Exception)
             {
@@ -88,13 +89,13 @@ namespace Dsw2025Tpi.Api.Controllers
             {
                 return BadRequest(ae.Message);
             }
-            catch (ApplicationException de)
+            catch (EntityNotFoundException nf)
             {
-                return Conflict(de.Message);
+                return NotFound(nf.Message);
             }
             catch (Exception)
             {
-                return Problem("Se produjo un error al eliminar el producto");
+                return Problem("Se produjo un error al deshabilitar el producto");
             }
         }
     }
