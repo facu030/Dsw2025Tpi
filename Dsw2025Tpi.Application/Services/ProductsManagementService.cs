@@ -64,10 +64,10 @@ namespace Dsw2025Tpi.Application.Services
             {
                 throw new EntityNotFoundException("No existe un producto con el Id especificado");
             }
-            if(product.Sku != request.Sku || 
-            product.InternalCode != request.InternalCode || 
+            if (product.Sku != request.Sku ||
+            product.InternalCode != request.InternalCode ||
             product.Name != request.Name ||
-            product.Description != request.Description || 
+            product.Description != request.Description ||
             product.CurrentUnitPrice != request.CurrentUnitPrice ||
             product.StockQuantity != request.StockQuantity)
             {
@@ -79,7 +79,8 @@ namespace Dsw2025Tpi.Application.Services
                 product.StockQuantity = request.StockQuantity;
                 await _productRepository.Update(product);
                 return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
-            }throw new ArgumentException("No se han modificado los valores del producto");
+            }
+            throw new ArgumentException("No se han modificado los valores del producto");
 
         }
 

@@ -39,7 +39,7 @@ namespace Dsw2025Tpi.Api.Controllers
             try
             {
                 var product = await _service.AddProduct(request);
-                return CreatedAtAction(nameof(GetProductById), new {id = product.Id}, product);
+                return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
             }
             catch (ArgumentException ae)
             {
@@ -56,7 +56,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(Guid id ,[FromBody] ProductModel.Request request)
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.Request request)
         {
             try
             {

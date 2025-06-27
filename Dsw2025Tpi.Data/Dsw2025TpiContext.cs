@@ -13,7 +13,7 @@ public class Dsw2025TpiContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-     
+
         modelBuilder.Entity<Product>(eb =>
         {
             eb.ToTable("Products");
