@@ -55,12 +55,12 @@ namespace Dsw2025Tpi.Api.Controllers
             }
         }
 
-        [HttpPut()]
-        public async Task<IActionResult> UpdateProduct([FromBody] ProductModel.Request request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(Guid id ,[FromBody] ProductModel.Request request)
         {
             try
             {
-                var product = await _service.UpdateProduct(request);
+                var product = await _service.UpdateProduct(id, request);
                 return Ok(product);
             }
             catch (ArgumentException ae)
