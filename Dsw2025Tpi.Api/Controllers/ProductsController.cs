@@ -53,5 +53,49 @@ namespace Dsw2025Tpi.Api.Controllers
                 return Problem("Se produjo un error al guardar el producto");
             }
         }
+
+        [HttpPut()]
+        public async Task<IActionResult> UpdateProduct([FromBody] ProductModel.Request request)
+        {
+            try
+            {
+                var product = await _service.UpdateProduct(request);
+                return Ok(product);
+            }
+            catch (ArgumentException ae)
+            {
+                return BadRequest(ae.Message);
+            }
+            catch (ApplicationException de)
+            {
+                return Conflict(de.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Se produjo un error al actualizar el producto");
+            }
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> DisableProduct(Guid id)
+        {
+            try
+            {
+                var product = await _service.DisableProduct(id);
+                return Ok(product);
+            }
+            catch (ArgumentException ae)
+            {
+                return BadRequest(ae.Message);
+            }
+            catch (ApplicationException de)
+            {
+                return Conflict(de.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Se produjo un error al eliminar el producto");
+            }
+        }
     }
 }

@@ -24,11 +24,4 @@
     <ProjectReference Include="..\Dsw2025Tpi.Domain\Dsw2025Tpi.Domain.csproj" />
   </ItemGroup>
 
-	<ItemGroup>
-		<Content Include="..\Dsw2025Tpi.Data\Sources\**\*.*">
-			<Link>Sources\%(RecursiveDir)%(Filename)%(Extension)</Link>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
-
 </Project>
