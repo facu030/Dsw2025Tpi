@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Domain.Entities
@@ -10,9 +11,10 @@ namespace Dsw2025Tpi.Domain.Entities
     {
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
-        public decimal Subtotal { get; set; }
+        public decimal Subtotal => Quantity * UnitPrice;
 
         public Guid OrderId { get; set; }
+        [JsonIgnore]
         public Order Order { get; set; }
 
         public Guid ProductId { get; set; }

@@ -30,11 +30,12 @@ public class Program
             options.UseSeeding((c, t) =>
             {
                 ((Dsw2025TpiContext)c).Seedwork<Product>("Sources\\products.json");
-                ((Dsw2025TpiContext)c).Seedwork<Product>("Sources\\customers.json");
+                ((Dsw2025TpiContext)c).Seedwork<Customer>("Sources\\customers.json");
             });
         });
         builder.Services.AddScoped<IRepository, EfRepository>();
         builder.Services.AddTransient<ProductsManagementService>();
+        builder.Services.AddTransient<OrdersManagementService>();
 
         var app = builder.Build();
 

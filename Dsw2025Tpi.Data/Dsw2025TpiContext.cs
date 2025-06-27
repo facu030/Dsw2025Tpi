@@ -32,5 +32,8 @@ public class Dsw2025TpiContext : DbContext
             .IsRequired();
 
         });
+        modelBuilder.Entity<Order>(eb => {
+            eb.ToTable("Orders");
+        });
     }
 }
