@@ -91,8 +91,8 @@ namespace Dsw2025Tpi.Api.Controllers
         {
             try
             {
-                var product = await _service.DisableProduct(id);
-                return Ok(product);
+                await _service.DisableProduct(id);
+                return NoContent();
             }
             catch (ArgumentException ae)
             {

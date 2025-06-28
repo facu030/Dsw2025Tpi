@@ -22,7 +22,8 @@ namespace Dsw2025Tpi.Application.Services
         public async Task<ProductModel.Response?> GetProductById(Guid id)
         {
             var product = await _productRepository.GetById<Product>(id);
-            return product != null ?
+
+            return product != null && product.IsActive ?
                 new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity) :
                 null;
         }
@@ -82,7 +83,7 @@ namespace Dsw2025Tpi.Application.Services
         public async Task<ProductModel.Response> DisableProduct(Guid id)
         {
             var product = await _productRepository.GetById<Product>(id);
-            if (product == null) throw new EntityNotFoundException("No existe un producto con el ID especificado");
+            if (product == null || !product.IsActive) throw new EntityNotFoundException("No existe un producto con el ID especificado");
             product.IsActive = false;
             await _productRepository.Update(product);
             return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
