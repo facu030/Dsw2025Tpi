@@ -1,8 +1,8 @@
-
-using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Data;
 using Dsw2025Tpi.Data.Repositories;
+using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
+using Dsw2025Tpi.Application.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dsw2025Tpi.Api;
@@ -20,14 +20,17 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddHealthChecks();
-        builder.Services.AddScoped<IRepository, EfRepository>();
-        builder.Services.AddTransient<ProductsManagementServices>();
-        //contexto
+
+
+        //Configure agregada
         builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
-        {
-            options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;");
-            //para q el contexto sepa con q base de datos va a trabajar
-        });
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        builder.Services.AddScoped<IRepository, EfRepository>(); //
+
+        builder.Services.AddScoped<ProductsManagementServices>();
+        builder.Services.AddScoped<IOrderService, OrdersManagementService>();
+
 
         var app = builder.Build();
 
@@ -43,7 +46,7 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
-        
+
         app.MapHealthChecks("/healthcheck");
 
         app.Run();

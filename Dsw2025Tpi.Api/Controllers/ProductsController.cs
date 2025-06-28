@@ -3,6 +3,7 @@ using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using ApplicationException = System.ApplicationException;
 
 
 namespace Dsw2025Tpi.Api.Controllers
@@ -19,83 +20,57 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         // POST
-        [HttpPost()]
-        public async Task<IActionResult> AddProduct([FromBody] ProductModel.Request request)
+        [HttpPost]
+        [ProducesResponseType(typeof(ProductModel.ProductResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ProductModel.ProductResponse>> AddProduct([FromBody] ProductModel.Request request)
         {
-            try
-            {
-                var product = await _services.AddProduct(request);
-                return Ok(product);
-            }
-            catch (ArgumentException ae)
-            {
-                return BadRequest(ae.Message);
-            }
-            catch (DuplicatedEntityException de)
-            {
-                return Conflict(de.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("Se produjo un error al guardar el producto");
-            }
+            var response = await _services.AddProduct(request);
+            return CreatedAtAction(nameof(AddProduct), new { id = response.Id }, response);
         }
 
         // GET
-        [HttpGet()]
-        public async Task<IActionResult> GetProducts()
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<ProductModel.ProductResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult<List<ProductModel.ProductResponse>>> GetProducts()
         {
             var products = await _services.GetProducts();
             if (products == null || !products.Any())
+            {
                 return NoContent();
-
+            }
             return Ok(products);
         }
 
-        // GET
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(Guid id)
+        // GET por id
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(ProductModel.ProductResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ProductModel.ProductResponse>> GetProductById(Guid id)
         {
             var product = await _services.GetProductById(id);
-            if (product == null)
-                return NotFound();
-
             return Ok(product);
         }
 
         // PUT
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.Request updatedProduct)
+        [HttpPut("{id:guid}")]
+        [ProducesResponseType(typeof(ProductModel.Response), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ProductModel.Response>> UpdateProduct([FromRoute] Guid id, [FromBody] ProductModel.Request request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            try
-            {
-                var result = await _services.UpdateProduct(id, updatedProduct);
-                if (result == null)
-                    return NotFound();
-
-                return Ok(result);
-            }
-            catch (ArgumentException ae)
-            {
-                return BadRequest(ae.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("Se produjo un error al actualizar el producto");
-            }
+            var updatedProduct = await _services.UpdateProductAsync(request, id);
+            return Ok(updatedProduct);
         }
 
         // PATCH
-        [HttpPatch("{id}")]
+        [HttpPatch("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DisableProduct(Guid id)
         {
-            var success = await _services.DisableProduct(id);
-            if (!success)
-                return NotFound();
-
+            await _services.DisableProductAsync(id);
             return NoContent();
         }
     }
