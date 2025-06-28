@@ -63,7 +63,7 @@ namespace Dsw2025Tpi.Application.Services
 
             foreach (var item in request.OrderItems)
             {
-                var product = products?.First(p => p.Id == item.ProductId);
+                var product = products?.FirstOrDefault(p => p.Id == item.ProductId);
                 product.StockQuantity -= item.Quantity;
                 await _orderRepository.Update(product);
             }
