@@ -32,8 +32,20 @@ public class Dsw2025TpiContext : DbContext
             .IsRequired();
 
         });
+        
         modelBuilder.Entity<Order>(eb => {
             eb.ToTable("Orders");
+            eb.Property(o => o.Date).HasColumnType("datetime2(7)").IsRequired();
+            eb.Property(o => o.Status).IsRequired();
+            eb.Property(o => o.ShippingAddress).HasMaxLength(120).IsRequired();
+            eb.Property(o => o.BillingAddress).HasMaxLength(120).IsRequired();
+            eb.Property(o => o.Notes).HasMaxLength(350);
+        });
+
+        modelBuilder.Entity<OrderItem>(eb => {
+            eb.ToTable("OrderItems");
+            eb.Property(oi => oi.Quantity).IsRequired();
+            eb.Property(oi => oi.UnitPrice).HasPrecision(15, 2).IsRequired();
         });
     }
 }

@@ -18,6 +18,7 @@ namespace Dsw2025Tpi.Domain.Entities
         public Order Order { get; set; }
 
         public Guid ProductId { get; set; }
+        [JsonIgnore]
         public Product Product { get; set; }
 
     }

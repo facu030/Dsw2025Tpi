@@ -9,7 +9,7 @@ namespace Dsw2025Tpi.Domain.Entities
 {
     public class Order : EntityBase
     {
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.UtcNow;
         public string? ShippingAddress { get; set; }
         public string? BillingAddress { get; set; }
         public string? Notes { get; set; }
@@ -18,7 +18,7 @@ namespace Dsw2025Tpi.Domain.Entities
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
         public Guid CustomerId { get; set; }
-        public Customer Customer { get; set; }
+        public Customer? Customer { get; set; }
 
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
