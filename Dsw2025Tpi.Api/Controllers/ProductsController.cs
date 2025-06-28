@@ -3,6 +3,7 @@ using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dsw2025Tpi.Api.Controllers
 {
@@ -45,6 +46,10 @@ namespace Dsw2025Tpi.Api.Controllers
             {
                 return BadRequest(ae.Message);
             }
+            catch (DbUpdateException)
+            {
+                return BadRequest("Error al actualizar la base de datos");
+            }
             catch (DuplicatedEntityException de)
             {
                 return BadRequest(de.Message);
@@ -66,6 +71,10 @@ namespace Dsw2025Tpi.Api.Controllers
             catch (ArgumentException ae)
             {
                 return BadRequest(ae.Message);
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest("Error al actualizar la base de datos");
             }
             catch (EntityNotFoundException nf)
             {

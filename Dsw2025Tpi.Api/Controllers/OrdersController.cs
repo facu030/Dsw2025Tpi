@@ -3,6 +3,7 @@ using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dsw2025Tpi.Api.Controllers;
 
@@ -14,6 +15,14 @@ public class OrdersController : ControllerBase
     public OrdersController(OrdersManagementService service)
     {
         _service = service;
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> GetOrders()
+    {
+        var orders = await _service.GetOrders();
+        if (orders == null || !orders.Any()) return NoContent();
+        return Ok(orders);
     }
 
     [HttpGet("{id}")]
@@ -35,9 +44,17 @@ public class OrdersController : ControllerBase
         {
             return BadRequest(ae.Message);
         }
+        catch (DbUpdateException)
+        {
+            return BadRequest("Error al actualizar la base de datos");
+        }
         catch (DuplicatedEntityException de)
         {
             return BadRequest(de.Message);
+        }
+        catch(EntityNotFoundException nf)
+        {
+            return BadRequest(nf.Message);
         }
         catch (Exception e)
         {

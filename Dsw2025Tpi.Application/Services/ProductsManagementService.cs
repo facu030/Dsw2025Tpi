@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dsw2025Tpi.Application.Exceptions;
+using Dsw2025Tpi.Application.Helpers;
 
 namespace Dsw2025Tpi.Application.Services
 {
@@ -36,7 +37,7 @@ namespace Dsw2025Tpi.Application.Services
         {
             if (string.IsNullOrWhiteSpace(request.Sku) ||
             string.IsNullOrWhiteSpace(request.Name) ||
-            request.CurrentUnitPrice < 0
+            request.CurrentUnitPrice <= 0
             || request.StockQuantity < 0)
             {
                 throw new ArgumentException("Valores para el producto no válidos");
@@ -59,17 +60,11 @@ namespace Dsw2025Tpi.Application.Services
             {
                 throw new ArgumentException("Valores para el producto no válidos");
             }
+
             var product = await _productRepository.GetById<Product>(id);
-            if (product == null)
-            {
-                throw new EntityNotFoundException("No existe un producto con el Id especificado");
-            }
-            if (product.Sku != request.Sku ||
-            product.InternalCode != request.InternalCode ||
-            product.Name != request.Name ||
-            product.Description != request.Description ||
-            product.CurrentUnitPrice != request.CurrentUnitPrice ||
-            product.StockQuantity != request.StockQuantity)
+            if (product == null)  throw new EntityNotFoundException("No existe un producto con el Id especificado");
+            
+            if (ProductComparer.HasChanges(product, request))
             {
                 product.Sku = request.Sku;
                 product.InternalCode = request.InternalCode;
