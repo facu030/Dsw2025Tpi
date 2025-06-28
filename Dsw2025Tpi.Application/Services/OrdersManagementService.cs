@@ -59,6 +59,11 @@ namespace Dsw2025Tpi.Application.Services
 
                 if (item.UnitPrice != product.CurrentUnitPrice) throw new ArgumentException( $"El precio de '{product.Name}' no coincide con el actual. Esperado: {product.CurrentUnitPrice}, recibido: {item.UnitPrice}");
 
+            }
+
+            foreach (var item in request.OrderItems)
+            {
+                var product = products?.First(p => p.Id == item.ProductId);
                 product.StockQuantity -= item.Quantity;
                 await _orderRepository.Update(product);
             }
