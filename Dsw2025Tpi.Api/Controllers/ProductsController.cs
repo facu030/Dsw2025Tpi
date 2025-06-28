@@ -34,7 +34,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> AddProduct([FromBody] ProductModel.Request request)
+        public async Task<IActionResult> AddProduct([FromBody] ProductModel.ProductRequest request)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.Request request)
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.ProductRequest request)
         {
             try
             {

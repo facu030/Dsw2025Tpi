@@ -13,7 +13,7 @@ namespace Dsw2025Tpi.Domain.Entities
         public string? ShippingAddress { get; set; }
         public string? BillingAddress { get; set; }
         public string? Notes { get; set; }
-        public decimal TotalAmount { get; set; }
+        public decimal TotalAmount => OrderItems?.Sum(item => item.Subtotal) ?? 0;
 
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
 

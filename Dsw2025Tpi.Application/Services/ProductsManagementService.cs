@@ -32,7 +32,7 @@ namespace Dsw2025Tpi.Application.Services
             return products?.Select(p => new ProductModel.Response(p.Id, p.Sku, p.InternalCode, p.Name, p.Description, p.CurrentUnitPrice, p.StockQuantity));
         }
 
-        public async Task<ProductModel.Response> AddProduct(ProductModel.Request request)
+        public async Task<ProductModel.Response> AddProduct(ProductModel.ProductRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Sku) ||
             string.IsNullOrWhiteSpace(request.Name) ||
@@ -50,7 +50,7 @@ namespace Dsw2025Tpi.Application.Services
 
         }
 
-        public async Task<ProductModel.Response> UpdateProduct(Guid id, ProductModel.Request request)
+        public async Task<ProductModel.Response> UpdateProduct(Guid id, ProductModel.ProductRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Sku) ||
             string.IsNullOrWhiteSpace(request.Name) ||

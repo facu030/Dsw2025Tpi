@@ -24,6 +24,9 @@
 		<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	</None>
+	<None Update="Sources\customers.json">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
 	<None Update="Sources\products.json">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
