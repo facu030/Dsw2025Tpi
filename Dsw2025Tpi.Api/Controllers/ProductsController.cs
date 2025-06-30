@@ -37,6 +37,15 @@ namespace Dsw2025Tpi.Api.Controllers
         [HttpPost()]
         public async Task<IActionResult> AddProduct([FromBody] ProductModel.ProductRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                var firstError = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+
+                return BadRequest(firstError);
+            }
             try
             {
                 var product = await _service.AddProduct(request);

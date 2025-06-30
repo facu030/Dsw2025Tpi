@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Application.Dtos
 {
-    public record ProductModel
+    public static class ProductModel
     {
-        public record ProductRequest(string Sku, string InternalCode, string Name, string Description, decimal CurrentUnitPrice, int StockQuantity);
-        public record Response(Guid Id, string? Sku, string? InternalCode, string? Name, string? Description, decimal CurrentUnitPrice, int StockQuantity);
+        public record ProductRequest(string Sku, string InternalCode, string Name, string? Description, decimal CurrentUnitPrice, int StockQuantity);
+        public record Response(Guid Id, string Sku, string InternalCode, string Name, string? Description, decimal CurrentUnitPrice, int StockQuantity);
     }
 }

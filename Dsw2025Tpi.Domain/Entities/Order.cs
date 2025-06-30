@@ -9,9 +9,17 @@ namespace Dsw2025Tpi.Domain.Entities
 {
     public class Order : EntityBase
     {
+        
+        public Order(Guid customerId, string shippingAddress, string billingAddress, string? notes = null )
+        {
+            CustomerId = customerId;
+            ShippingAddress = shippingAddress;
+            BillingAddress = billingAddress;
+            Notes = notes;
+        }
         public DateTime Date { get; set; } = DateTime.UtcNow;
-        public string? ShippingAddress { get; set; }
-        public string? BillingAddress { get; set; }
+        public string ShippingAddress { get; set; }
+        public string BillingAddress { get; set; }
         public string? Notes { get; set; }
         public decimal TotalAmount => OrderItems?.Sum(item => item.Subtotal) ?? 0;
 

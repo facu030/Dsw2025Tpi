@@ -24,43 +24,60 @@ namespace Dsw2025Tpi.Application.Services
             var product = await _productRepository.GetById<Product>(id);
 
             return product != null && product.IsActive ?
-                new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity) :
+                new ProductModel.Response(
+                    product.Id, 
+                    product.Sku, 
+                    product.InternalCode, 
+                    product.Name, 
+                    product.Description, 
+                    product.CurrentUnitPrice, 
+                    product.StockQuantity) :
                 null;
         }
 
         public async Task<IEnumerable<ProductModel.Response>?> GetProducts()
         {
             var products = await _productRepository.GetFiltered<Product>(p => p.IsActive);
-            return products?.Select(p => new ProductModel.Response(p.Id, p.Sku, p.InternalCode, p.Name, p.Description, p.CurrentUnitPrice, p.StockQuantity));
+            return products?.Select(p => new ProductModel.Response(
+                p.Id, 
+                p.Sku, 
+                p.InternalCode, 
+                p.Name, 
+                p.Description, 
+                p.CurrentUnitPrice,
+                p.StockQuantity));
         }
 
         public async Task<ProductModel.Response> AddProduct(ProductModel.ProductRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Sku) ||
-            string.IsNullOrWhiteSpace(request.Name) ||
-            request.CurrentUnitPrice <= 0
-            || request.StockQuantity < 0)
-            {
-                throw new ArgumentException("Valores para el producto no válidos");
-            }
+            if (string.IsNullOrWhiteSpace(request.Sku)) throw new ArgumentException("El Sku no puede estar vacío.");
+            if (string.IsNullOrWhiteSpace(request.InternalCode)) throw new ArgumentException("El código interno no puede estar vacío.");
+            if (string.IsNullOrWhiteSpace(request.Name)) throw new ArgumentException("El Name no puede estar vacío.");
+            if (request.CurrentUnitPrice <= 0) throw new ArgumentException("El precio debe ser mayor que 0.");
+            if (request.StockQuantity < 0) throw new ArgumentException("La cantidad de stock no puede ser negativa.");
 
             var exist = await _productRepository.First<Product>(p => p.Sku == request.Sku || p.InternalCode == request.InternalCode);
             if (exist != null) throw new DuplicatedEntityException("Ya existe un producto con el mismo SKU o código interno");
             var product = new Product(request.Sku, request.InternalCode, request.Name, request.Description, request.CurrentUnitPrice, request.StockQuantity);
             await _productRepository.Add(product);
-            return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
+            return new ProductModel.Response(
+                product.Id, 
+                product.Sku, 
+                product.InternalCode, 
+                product.Name, 
+                product.Description, 
+                product.CurrentUnitPrice, 
+                product.StockQuantity);
 
         }
 
         public async Task<ProductModel.Response> UpdateProduct(Guid id, ProductModel.ProductRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Sku) ||
-            string.IsNullOrWhiteSpace(request.Name) ||
-            string.IsNullOrWhiteSpace(request.InternalCode) ||
-            request.CurrentUnitPrice < 0 || request.StockQuantity < 0)
-            {
-                throw new ArgumentException("Valores para el producto no válidos");
-            }
+            if (string.IsNullOrWhiteSpace(request.Sku)) throw new ArgumentException("El Sku no puede estar vacío.");
+            if (string.IsNullOrWhiteSpace(request.InternalCode)) throw new ArgumentException("El código interno no puede estar vacío.");
+            if (string.IsNullOrWhiteSpace(request.Name)) throw new ArgumentException("El Name no puede estar vacío.");
+            if (request.CurrentUnitPrice <= 0) throw new ArgumentException("El precio debe ser mayor que 0.");
+            if (request.StockQuantity < 0) throw new ArgumentException("La cantidad de stock no puede ser negativa.");
 
             var product = await _productRepository.GetById<Product>(id);
             if (product == null)  throw new EntityNotFoundException("No existe un producto con el Id especificado");
@@ -74,7 +91,14 @@ namespace Dsw2025Tpi.Application.Services
                 product.CurrentUnitPrice = request.CurrentUnitPrice;
                 product.StockQuantity = request.StockQuantity;
                 await _productRepository.Update(product);
-                return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
+                return new ProductModel.Response(
+                    product.Id, 
+                    product.Sku, 
+                    product.InternalCode, 
+                    product.Name, 
+                    product.Description, 
+                    product.CurrentUnitPrice, 
+                    product.StockQuantity);
             }
             throw new ArgumentException("No se han modificado los valores del producto");
 
@@ -86,7 +110,14 @@ namespace Dsw2025Tpi.Application.Services
             if (product == null || !product.IsActive) throw new EntityNotFoundException("No existe un producto con el ID especificado");
             product.IsActive = false;
             await _productRepository.Update(product);
-            return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
+            return new ProductModel.Response(
+                product.Id, 
+                product.Sku,
+                product.InternalCode, 
+                product.Name, 
+                product.Description, 
+                product.CurrentUnitPrice, 
+                product.StockQuantity);
 
         }
     }
