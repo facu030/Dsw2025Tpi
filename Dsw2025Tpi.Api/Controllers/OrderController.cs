@@ -63,7 +63,7 @@ namespace Dsw2025Tpi.Api.Controllers
             }
         }
 
-        /*PARA ACTUALIZAR EL ESTADO DE UNA ORDEN*/
+        /*PARA ACTUALIZAR EL ESTADO DE UNA ORDEN(ENDPOINT 9)*/
         [HttpPut("{id}/status")]
         public async Task<IActionResult> UpdateOrderStatus(Guid id,[FromBody] OrderModel.UpdateStatusRequest request)
         {
@@ -88,18 +88,24 @@ namespace Dsw2025Tpi.Api.Controllers
 
         /*PARA OBTENER TODAS LAS ORDENES*/
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders()
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrders(
+    [FromQuery] string? status,
+    [FromQuery] Guid? customerId,
+    [FromQuery] int pageNumber = 1,
+    [FromQuery] int pageSize = 10)
         {
             try
             {
-                var orders = await _service.GetAllOrders();
+                var orders = await _service.GetAllOrdersFiltered(status, customerId, pageNumber, pageSize);
                 return Ok(orders);
             }
             catch (Exception ex)
             {
-                return Problem("Se produjo un error al intentar obtener las ordenes");
+                return Problem("Se produjo un error al intentar obtener las órdenes");
             }
         }
+
 
     }
 }

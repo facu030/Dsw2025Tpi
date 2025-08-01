@@ -10,12 +10,13 @@ namespace Dsw2025Tpi.Application.Dtos
     public record OrderModel
     {
         public record OrderRequest(
-         Guid CustomerId,
-         string ShippingAddress,
-         string BillingAddress,
-         string? Notes,
-         List<OrderItemRequest> OrderItems
-         );
+            Guid CustomerId,
+            string ShippingAddress,
+            string BillingAddress,
+            string? Notes,
+            List<OrderItemRequest> OrderItems
+        );
+
         public record OrderResponse(
             Guid Id,
             Guid CustomerId,
@@ -24,8 +25,10 @@ namespace Dsw2025Tpi.Application.Dtos
             string Notes,
             List<OrderItemResponse> OrderItems,
             string OrderStatus
-            );
+        );
 
+
+        // cambio por nuevo enunciado 
         public record OrderItemRequest(Guid ProductId, int Quantity);
 
         public record OrderItemResponse(
@@ -51,4 +54,5 @@ namespace Dsw2025Tpi.Application.Dtos
 
         public record UpdateStatusRequest(OrderStatus status);
     }
+
 }

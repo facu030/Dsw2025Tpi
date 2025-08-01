@@ -179,11 +179,18 @@ namespace Dsw2025Tpi.Application.Services
 
 
         /*PARA OBTENER TODAS LAS ORDENES*/
-        public async Task<List<OrderModel.OrderDetailedResponse>> GetAllOrders()
+        public async Task<List<OrderModel.OrderDetailedResponse>> GetAllOrdersFiltered(string? status, Guid? customerId, int pageNumber, int pageSize)
         {
             var orders = await _repository.GetAll<Order>("Customer", "OrderItems.Product");
 
-            return orders.Select(order => new OrderModel.OrderDetailedResponse(
+            var filtered = orders
+                .Where(o => status == null || o.Status.ToString().Equals(status, StringComparison.OrdinalIgnoreCase))
+                .Where(o => customerId == null || o.CustomerId == customerId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return filtered.Select(order => new OrderModel.OrderDetailedResponse(
                 order.Id,
                 order.CustomerId,
                 order.Customer?.Name ?? "Cliente no disponible",
