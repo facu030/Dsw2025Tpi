@@ -38,6 +38,27 @@ namespace Dsw2025Tpi.Application.Services
             return new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity);
         }
 
+
+
+        //el controlador llama a este metodo ,que es el sericio tiene que ir a la interfaz irepositorio que se comunica con entitro framwork qeu tiene la base de datos 
+        // y los devuelve como un produc model (DTO) deuvle los productos activos 
+        public async Task<IEnumerable<ProductModel.Response>?> GetProducts()
+        {
+            return (await _repository
+                .GetFiltered<Product>(p => p.IsActive))?
+                .Select(p => new ProductModel.Response(p.Id, p.Sku, p.InternalCode, p.Name, p.Description,
+                p.CurrentUnitPrice, p.StockQuantity));
+        }
+
+
+        //para obtener el producto por el id , me flata escribir la explicacion del codigo 
+        public async Task<ProductModel.Response?> GetProductById(Guid id)
+        {
+            var product = await _repository.GetById<Product>(id);
+            return product != null ?
+                new ProductModel.Response(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity) : null;
+            ;
+        }
     }
 
 
