@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exeptions;
 using Dsw2025Tpi.Domain.Entities;
+using Dsw2025Tpi.Application.Exceptions;
 
 
 
@@ -63,13 +64,64 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
 
-        /*PARA OBTENER UN PRODUCTO CON UN ID PARTICULAR  */
+        /*PARA OBTENER UN PRODUCTO CON UN ID PARTICULAR (endpoint 3)  */
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductBySku(Guid id)
         {
             var product = await _service.GetProductById(id);
             if (product == null) return NotFound();
             return Ok(product);
+        }
+
+
+        /*PARA MODIFICAR PROFUCTO POR ID (endpoint 4 )*/
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.UpdateRequest request)
+        {
+            try
+            {
+                var updatedProduct = await _service.UpdateProduct(id, request);
+                return Ok(updatedProduct);
+            }
+            catch (ArgumentException ae)
+            {
+                return BadRequest(ae.Message);
+            }
+            catch (EntityNotFoundException enfe)
+            {
+                return NotFound(enfe.Message);
+            }
+            catch (DuplicatedEntityException dee)
+            {
+                return Conflict(dee.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Error interno al actualizar el producto");
+            }
+        }
+
+        /*INHABILITAR UN PRODUCTO endpoint 5*/
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateProductPartial(Guid id, [FromBody] ProductModel.PatchRequest request)
+        {
+
+            if (!request.IsActive.HasValue)
+                return BadRequest("Debe proporcionar al menos un campo válido para actualizar");
+
+            try
+            {
+                var result = await _service.UpdateProductStatus(id, request.IsActive.Value);
+                return NoContent();
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Error al actualizar el producto");
+            }
         }
 
     }
