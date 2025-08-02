@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Application.Dtos;
 
-namespace Dsw2025Tpi.Api.Controllers
+namespace Dsw2025Tpi.Api.Controllers //Esta es mi api 
 {
     [ApiController]
     [Route("api/auth")]
