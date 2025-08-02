@@ -7,9 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
-    <Folder Include="Dtos\" />
-    <Folder Include="Services\" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.13.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dsw2025Tpi.Domain\Dsw2025Tpi.Domain.csproj" />
   </ItemGroup>
 
 </Project>

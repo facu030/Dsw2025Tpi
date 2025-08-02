@@ -1,0 +1,38 @@
+[
+    {
+        "Id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        "Name": "Juan Pérez",
+        "eMail": "juan.perez@gmail.com",
+        "PhoneNumber": "+54 381 1234567"
+    },
+    {
+        "Id": "b2c3d4e5-f678-9012-3456-7890abcdef12",
+        "Name": "María García",
+        "eMail": "maria.garcia@gmail.com",
+        "PhoneNumber": "+54 11 7654321"
+    },
+    {
+        "Id": "c3d4e5f6-7890-1234-5678-90abcdef1234",
+        "Name": "Carlos López",
+        "eMail": "carlos.lopez@gmail.com",
+        "PhoneNumber": "+54 351 9876543"
+    },
+    {
+        "Id": "d4e5f678-9012-3456-7890-abcdef123456",
+        "Name": "Lucía Fernández",
+        "eMail": "lucia.fernandez@gmail.com",
+        "PhoneNumber": "+54 299 1112233"
+    },
+    {
+        "Id": "e5f67890-1234-5678-90ab-cdef12345678",
+        "Name": "Ricardo Gómez",
+        "eMail": "ricardo.gomez@gmail.com",
+        "PhoneNumber": "+54 264 3344556"
+    },
+    {
+        "Id": "f6789012-3456-7890-abcd-ef1234567890",
+        "Name": "Valentina Martínez",
+        "eMail": "valentina.martinez@gmail.com",
+        "PhoneNumber": "+54 387 5566778"
+    }
+]
