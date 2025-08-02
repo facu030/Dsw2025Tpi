@@ -8,6 +8,8 @@ using Dsw2025Tpi.Data.Repositories;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 
@@ -24,8 +26,40 @@ public class Program
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(o =>
+        {
+            o.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "Desarrollo de Software",
+                Version = "v1",
+            });
+
+            o.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Name = "Authorization",
+                Description = "Ingresar el token",
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
+            });
+
+            o.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+        });
         builder.Services.AddHealthChecks();
+        builder.Services.AddAuthentication()
+              .AddJwtBearer();
 
         //Configure agregada
         builder.Services.AddDbContext<Dsw2025TpiContext>(options =>

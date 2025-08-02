@@ -6,12 +6,14 @@ using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exeptions;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Application.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 
 
 namespace Dsw2025Tpi.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/products")]
     public class ProductsController : ControllerBase
     {
@@ -46,7 +48,11 @@ namespace Dsw2025Tpi.Api.Controllers
         }
         /*PARA TRAER TODOS LOS PRODUCTOS  (ENDOPOINT 2) */
         /*PARA OBTENER TODOS LOS PRODUCTOS*/
-        [HttpGet()] // RESPONDE UNA SOLICITUD GET DE LARUTA DEL CONTROLADOR 
+        [HttpGet()]
+        //PERMITE INGRESAR  SIN ESTAR AUTENTICADO 
+        [AllowAnonymous]
+        
+        // RESPONDE UNA SOLICITUD GET DE LARUTA DEL CONTROLADOR 
 
 
         //EL METODO DEVUELVE UN IActionRsult lo que me permite devolver los estados ( return ok) 
@@ -66,6 +72,7 @@ namespace Dsw2025Tpi.Api.Controllers
 
         /*PARA OBTENER UN PRODUCTO CON UN ID PARTICULAR (endpoint 3)  */
         [HttpGet("{id}")]
+        [Authorize(Roles ="testear")]
         public async Task<IActionResult> GetProductBySku(Guid id)
         {
             var product = await _service.GetProductById(id);
