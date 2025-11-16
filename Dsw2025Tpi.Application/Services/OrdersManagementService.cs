@@ -1,5 +1,6 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
+using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Application.Services
 {
-    public class OrdersManagementService
+    public class OrdersManagementService : IOrdersManagementService
     {
         public readonly IRepository _orderRepository;
         public OrdersManagementService(IRepository orderRepository)

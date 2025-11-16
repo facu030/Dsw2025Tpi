@@ -1,5 +1,6 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
+using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +12,8 @@ namespace Dsw2025Tpi.Api.Controllers;
 [ApiController]
 public class OrdersController : ControllerBase
 {
-    private readonly OrdersManagementService _service;
-    public OrdersController(OrdersManagementService service)
+    private readonly IOrdersManagementService _service;
+    public OrdersController(IOrdersManagementService service)
     {
         _service = service;
     }

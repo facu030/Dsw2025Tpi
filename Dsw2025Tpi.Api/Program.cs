@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
 using System;
 using Dsw2025Tpi.Domain.Interfaces;
+using Dsw2025Tpi.Application.Interfaces;
 
 namespace Dsw2025Tpi.Api;
 
@@ -34,8 +35,8 @@ public class Program
             });
         });
         builder.Services.AddScoped<IRepository, EfRepository>();
-        builder.Services.AddTransient<ProductsManagementService>();
-        builder.Services.AddTransient<OrdersManagementService>();
+        builder.Services.AddScoped<IProductsManagementService, ProductsManagementService>();
+        builder.Services.AddScoped<IOrdersManagementService, OrdersManagementService>();
 
         var app = builder.Build();
 
