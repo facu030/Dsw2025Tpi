@@ -1,14 +1,15 @@
 
+using Dsw2025Tpi.Api.Middlewares;
+using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Data;
 using Dsw2025Tpi.Data.Helpers;
 using Dsw2025Tpi.Data.Repositories;
 using Dsw2025Tpi.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Metrics;
-using System;
 using Dsw2025Tpi.Domain.Interfaces;
-using Dsw2025Tpi.Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Diagnostics.Metrics;
 
 namespace Dsw2025Tpi.Api;
 
@@ -52,6 +53,8 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
+
+        app.UseMiddleware<ExceptionMiddleware>();
 
         app.MapHealthChecks("/healthcheck");
 

@@ -33,6 +33,7 @@ public class OrdersController : ControllerBase
         if (order == null) return NotFound($"No se encontró la orden con el id {id}");
         return Ok(order);
     }
+
     [HttpPost()]
     public async Task<IActionResult> CreateOrder([FromBody] OrderModel.OrderRequest request)
     {
@@ -41,25 +42,9 @@ public class OrdersController : ControllerBase
             var order = await _service.CreateOrder(request);
             return Ok(order);
         }
-        catch (ArgumentException ae)
-        {
-            return BadRequest(ae.Message);
-        }
         catch (DbUpdateException)
         {
             return BadRequest("Error al actualizar la base de datos");
-        }
-        catch (DuplicatedEntityException de)
-        {
-            return BadRequest(de.Message);
-        }
-        catch(EntityNotFoundException nf)
-        {
-            return BadRequest(nf.Message);
-        }
-        catch (Exception e)
-        {
-            return Problem(e.Message);
         }
 
     }

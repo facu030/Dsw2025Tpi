@@ -52,21 +52,9 @@ namespace Dsw2025Tpi.Api.Controllers
                 var product = await _service.AddProduct(request);
                 return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
             }
-            catch (ArgumentException ae)
-            {
-                return BadRequest(ae.Message);
-            }
             catch (DbUpdateException)
             {
                 return BadRequest("Error al actualizar la base de datos");
-            }
-            catch (DuplicatedEntityException de)
-            {
-                return BadRequest(de.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("Se produjo un error al guardar el producto");
             }
         }
 
@@ -78,44 +66,17 @@ namespace Dsw2025Tpi.Api.Controllers
                 var product = await _service.UpdateProduct(id, request);
                 return Ok(product);
             }
-            catch (ArgumentException ae)
-            {
-                return BadRequest(ae.Message);
-            }
             catch (DbUpdateException)
             {
                 return BadRequest("Error al actualizar la base de datos");
-            }
-            catch (EntityNotFoundException nf)
-            {
-                return NotFound(nf.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("Se produjo un error al actualizar el producto");
             }
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> DisableProduct(Guid id)
         {
-            try
-            {
-                await _service.DisableProduct(id);
-                return NoContent();
-            }
-            catch (ArgumentException ae)
-            {
-                return BadRequest(ae.Message);
-            }
-            catch (EntityNotFoundException nf)
-            {
-                return NotFound(nf.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("Se produjo un error al deshabilitar el producto");
-            }
+            await _service.DisableProduct(id);
+            return NoContent();
         }
     }
 }
