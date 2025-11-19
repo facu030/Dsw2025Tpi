@@ -1,12 +1,7 @@
-
+using Dsw2025Tpi.Api.Extensions;
 using Dsw2025Tpi.Api.Middlewares;
-using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Data;
-using Dsw2025Tpi.Data.Helpers;
-using Dsw2025Tpi.Data.Repositories;
-using Dsw2025Tpi.Domain.Entities;
-using Dsw2025Tpi.Domain.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -80,7 +75,7 @@ public class Program
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
-            .AddJwtBearer(options =>
+        .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -95,35 +90,25 @@ public class Program
             }
             );
 
-        builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
-        {
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiEntities"));
-            options.UseSeeding((c, t) =>
-            {
-                ((Dsw2025TpiContext)c).Seedwork<Product>("Sources\\products.json");
-                ((Dsw2025TpiContext)c).Seedwork<Customer>("Sources\\customers.json");
-            });
-        });
-
+        builder.Services.AddDomainServices(builder.Configuration);
         builder.Services.AddSingleton<JwtTokenService>();
-        builder.Services.AddScoped<IRepository, EfRepository>();
-        builder.Services.AddScoped<IProductsManagementService, ProductsManagementService>();
-        builder.Services.AddScoped<IOrdersManagementService, OrdersManagementService>();
 
         builder.Services.AddDbContext<AuthenticateContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiEntities"));
         });
 
-        var app = builder.Build();
-
-        using (var scope = app.Services.CreateScope())
+        builder.Services.AddCors(options =>
         {
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            await SeedRoles(roleManager);
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-            await SeedAdminUser(userManager, roleManager);
-        }
+            options.AddPolicy("PermitirFrontend", policy =>
+            {
+                policy.WithOrigins("http://localhost:3000")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
+
+        var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -131,6 +116,8 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        await app.UseIdentitySeeding();
 
         app.UseHttpsRedirection();
 
@@ -145,38 +132,6 @@ public class Program
         app.MapHealthChecks("/healthcheck");
 
         app.Run();
-
-        static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
-        {
-            string[] roles = new[] { "Admin", "Customer" };
-
-            foreach (var role in roles)
-            {
-                if (!await roleManager.RoleExistsAsync(role))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(role));
-                }
-            }
-        }
-
-        async Task SeedAdminUser(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
-        {
-            var adminEmail = "admin@system.com";
-            var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-            if (adminUser == null)
-            {
-                adminUser = new IdentityUser
-                {
-                    UserName = "admin",
-                    Email = adminEmail
-                };
-
-                await userManager.CreateAsync(adminUser, "Admin123!");
-
-                await userManager.AddToRoleAsync(adminUser, "Admin");
-            }
-        }
 
     }
 }

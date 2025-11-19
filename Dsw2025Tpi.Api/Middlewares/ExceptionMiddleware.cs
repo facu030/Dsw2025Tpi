@@ -35,6 +35,9 @@ namespace Dsw2025Tpi.Api.Middlewares
                 DuplicatedEntityException => HttpStatusCode.Conflict,
                 DbUpdateException dbEx when dbEx.InnerException?.Message.Contains("duplicate") == true => HttpStatusCode.Conflict,
                 DbUpdateException => HttpStatusCode.BadRequest,
+                DatabaseUnavailableException => HttpStatusCode.ServiceUnavailable,
+                RoleSeedingException => HttpStatusCode.InternalServerError,
+                UserSeedingException => HttpStatusCode.InternalServerError,
                 _ => HttpStatusCode.InternalServerError
             };
 
@@ -44,6 +47,9 @@ namespace Dsw2025Tpi.Api.Middlewares
                 EntityNotFoundException => ex.Message,
                 ArgumentException => ex.Message,
                 DbUpdateException => ex.Message,
+                DatabaseUnavailableException => ex.Message,
+                RoleSeedingException => ex.Message,
+                UserSeedingException => ex.Message,
                 _ => ex.Message
             };
 
