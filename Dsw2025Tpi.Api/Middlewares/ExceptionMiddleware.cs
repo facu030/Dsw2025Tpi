@@ -33,8 +33,18 @@ namespace Dsw2025Tpi.Api.Middlewares
                 ArgumentException => HttpStatusCode.BadRequest,
                 EntityNotFoundException => HttpStatusCode.NotFound,
                 DuplicatedEntityException => HttpStatusCode.Conflict,
-                DbUpdateException => HttpStatusCode.Conflict,
+                DbUpdateException dbEx when dbEx.InnerException?.Message.Contains("duplicate") == true => HttpStatusCode.Conflict,
+                DbUpdateException => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError
+            };
+
+            var errorMessage = ex switch
+            {
+                DuplicatedEntityException => ex.Message,
+                EntityNotFoundException => ex.Message,
+                ArgumentException => ex.Message,
+                DbUpdateException => ex.Message,
+                _ => ex.Message
             };
 
             var result = JsonSerializer.Serialize(new

@@ -2,6 +2,7 @@
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ namespace Dsw2025Tpi.Api.Controllers;
 
 [Route("api/orders")]
 [ApiController]
+[Authorize]
 public class OrdersController : ControllerBase
 {
     private readonly IOrdersManagementService _service;
@@ -37,16 +39,10 @@ public class OrdersController : ControllerBase
     [HttpPost()]
     public async Task<IActionResult> CreateOrder([FromBody] OrderModel.OrderRequest request)
     {
-        try
-        {
+
             var order = await _service.CreateOrder(request);
             return Ok(order);
-        }
-        catch (DbUpdateException)
-        {
-            return BadRequest("Error al actualizar la base de datos");
-        }
-
+       
     }
 
 }

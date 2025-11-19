@@ -2,6 +2,7 @@
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,13 @@ using Microsoft.EntityFrameworkCore;
 namespace Dsw2025Tpi.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/products")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductsManagementService _service;
 
-        public ProductsController(ProductsManagementService service)
+        public ProductsController(IProductsManagementService service)
         {
             _service = service;
         }
@@ -47,29 +49,17 @@ namespace Dsw2025Tpi.Api.Controllers
 
                 return BadRequest(firstError);
             }
-            try
-            {
+     
                 var product = await _service.AddProduct(request);
                 return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
-            }
-            catch (DbUpdateException)
-            {
-                return BadRequest("Error al actualizar la base de datos");
-            }
+                
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.ProductRequest request)
         {
-            try
-            {
                 var product = await _service.UpdateProduct(id, request);
-                return Ok(product);
-            }
-            catch (DbUpdateException)
-            {
-                return BadRequest("Error al actualizar la base de datos");
-            }
+                return Ok(product);      
         }
 
         [HttpPatch("{id}")]
