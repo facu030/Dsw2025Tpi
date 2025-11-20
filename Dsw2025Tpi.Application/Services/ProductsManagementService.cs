@@ -20,36 +20,64 @@ namespace Dsw2025Tpi.Application.Services
             _productRepository = productRepository;
         }
 
-        public async Task<ProductModel.Response?> GetProductById(Guid id)
+        public async Task<ProductModel.ProductResponse?> GetProductById(Guid id)
         {
             var product = await _productRepository.GetById<Product>(id);
 
             return product != null && product.IsActive ?
-                new ProductModel.Response(
+                new ProductModel.ProductResponse(
                     product.Id, 
                     product.Sku, 
                     product.InternalCode, 
                     product.Name, 
                     product.Description, 
                     product.CurrentUnitPrice, 
-                    product.StockQuantity) :
+                    product.StockQuantity,
+                    product.IsActive
+                    ) :
                 null;
         }
 
-        public async Task<IEnumerable<ProductModel.Response>?> GetProducts()
+        public async Task<ProductModel.PaginationResponse> GetProducts(ProductModel.FilterProductRequest filter)
         {
-            var products = await _productRepository.GetFiltered<Product>(p => p.IsActive);
-            return products?.Select(p => new ProductModel.Response(
-                p.Id, 
-                p.Sku, 
-                p.InternalCode, 
-                p.Name, 
-                p.Description, 
-                p.CurrentUnitPrice,
-                p.StockQuantity));
+            var IncludeInactive = filter.Status == "IncludeInactive" ? true : false;
+            var filteredProducts = await _productRepository.GetFiltered<Product>(p =>
+                (IncludeInactive || p.IsActive)
+                && (string.IsNullOrEmpty(filter.Search)
+                    || (p.Name != null && p.Name.Contains(filter.Search))
+                    || (p.InternalCode != null && p.InternalCode.Contains(filter.Search))
+                   )
+                 );
+
+            if (filteredProducts == null || !filteredProducts.Any())
+            {
+                return new ProductModel.PaginationResponse(new List<ProductModel.ProductResponse>(), 0);
+            }
+
+            int page = filter.PageNumber ?? 1;
+            int size = filter.PageSize ?? 10;
+
+            var products = filteredProducts
+                 .OrderBy(p => p.Name)
+                 .Skip((page - 1) * size)
+                 .Take(size)
+                 .Select(p => new ProductModel.ProductResponse(
+                     p.Id,
+                     p.Sku,
+                     p.InternalCode,
+                     p.Name,
+                     p.Description,
+                     p.CurrentUnitPrice,
+                     p.StockQuantity,
+                     p.IsActive
+                 ))
+                 .ToList();
+
+            return new ProductModel.PaginationResponse(products, filteredProducts.Count());
+
         }
 
-        public async Task<ProductModel.Response> AddProduct(ProductModel.ProductRequest request)
+        public async Task<ProductModel.ProductResponse> AddProduct(ProductModel.ProductRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Sku)) throw new ArgumentException("El Sku no puede estar vacío.");
             if (string.IsNullOrWhiteSpace(request.InternalCode)) throw new ArgumentException("El código interno no puede estar vacío.");
@@ -61,18 +89,19 @@ namespace Dsw2025Tpi.Application.Services
             if (exist != null) throw new DuplicatedEntityException("Ya existe un producto con el mismo SKU o código interno");
             var product = new Product(request.Sku, request.InternalCode, request.Name, request.Description, request.CurrentUnitPrice, request.StockQuantity);
             await _productRepository.Add(product);
-            return new ProductModel.Response(
+            return new ProductModel.ProductResponse(
                 product.Id, 
                 product.Sku, 
                 product.InternalCode, 
                 product.Name, 
                 product.Description, 
                 product.CurrentUnitPrice, 
-                product.StockQuantity);
-
+                product.StockQuantity,
+                product.IsActive
+                );
         }
 
-        public async Task<ProductModel.Response> UpdateProduct(Guid id, ProductModel.ProductRequest request)
+        public async Task<ProductModel.ProductResponse> UpdateProduct(Guid id, ProductModel.ProductRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Sku)) throw new ArgumentException("El Sku no puede estar vacío.");
             if (string.IsNullOrWhiteSpace(request.InternalCode)) throw new ArgumentException("El código interno no puede estar vacío.");
@@ -92,33 +121,37 @@ namespace Dsw2025Tpi.Application.Services
                 product.CurrentUnitPrice = request.CurrentUnitPrice;
                 product.StockQuantity = request.StockQuantity;
                 await _productRepository.Update(product);
-                return new ProductModel.Response(
+                return new ProductModel.ProductResponse(
                     product.Id, 
                     product.Sku, 
                     product.InternalCode, 
                     product.Name, 
                     product.Description, 
                     product.CurrentUnitPrice, 
-                    product.StockQuantity);
+                    product.StockQuantity,
+                    product.IsActive
+                    );
             }
             throw new ArgumentException("No se han modificado los valores del producto");
 
         }
 
-        public async Task<ProductModel.Response> DisableProduct(Guid id)
+        public async Task<ProductModel.ProductResponse> DisableProduct(Guid id)
         {
             var product = await _productRepository.GetById<Product>(id);
             if (product == null || !product.IsActive) throw new EntityNotFoundException("No existe un producto con el ID especificado");
             product.IsActive = false;
             await _productRepository.Update(product);
-            return new ProductModel.Response(
+            return new ProductModel.ProductResponse(
                 product.Id, 
                 product.Sku,
                 product.InternalCode, 
                 product.Name, 
                 product.Description, 
                 product.CurrentUnitPrice, 
-                product.StockQuantity);
+                product.StockQuantity,
+                product.IsActive
+                );
 
         }
     }

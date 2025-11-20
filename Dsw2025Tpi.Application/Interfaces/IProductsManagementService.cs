@@ -9,10 +9,10 @@ namespace Dsw2025Tpi.Application.Interfaces
 {
     public interface IProductsManagementService
     {
-        Task<ProductModel.Response?> GetProductById(Guid id);
-        Task<IEnumerable<ProductModel.Response>?> GetProducts();
-        Task<ProductModel.Response> AddProduct(ProductModel.ProductRequest request);
-        Task<ProductModel.Response> UpdateProduct(Guid id, ProductModel.ProductRequest request);
-        Task<ProductModel.Response> DisableProduct(Guid id);
+        Task<ProductModel.ProductResponse?> GetProductById(Guid id);
+        Task<ProductModel.PaginationResponse> GetProducts(ProductModel.FilterProductRequest filter);
+        Task<ProductModel.ProductResponse> AddProduct(ProductModel.ProductRequest request);
+        Task<ProductModel.ProductResponse> UpdateProduct(Guid id, ProductModel.ProductRequest request);
+        Task<ProductModel.ProductResponse> DisableProduct(Guid id);
     }
 }

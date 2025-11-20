@@ -22,11 +22,11 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpGet()]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts([FromQuery]ProductModel.FilterProductRequest request)
         {
-            var products = await _service.GetProducts();
-            if (products == null || !products.Any()) return NoContent();
-            return Ok(products);
+            var result = await _service.GetProducts(request);
+            if (result.ProductItems == null || !result.ProductItems.Any()) return NoContent();
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
