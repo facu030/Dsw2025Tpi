@@ -38,29 +38,24 @@ namespace Dsw2025Tpi.Application.Services
                 null;
         }
 
-        public async Task<ProductModel.PaginationResponse> GetProducts(ProductModel.FilterProductRequest filter)
+        public async Task<ProductModel.PaginationResponse> GetProducts(ProductModel.FilterProductRequest request)
         {
-            var IncludeInactive = filter.Status == "IncludeInactive" ? true : false;
-            var filteredProducts = await _productRepository.GetFiltered<Product>(p =>
-                (IncludeInactive || p.IsActive)
-                && (string.IsNullOrEmpty(filter.Search)
-                    || (p.Name != null && p.Name.Contains(filter.Search))
-                    || (p.InternalCode != null && p.InternalCode.Contains(filter.Search))
-                   )
-                 );
+            var isActive = request.Status == "enabled" 
+                ? (bool?)true 
+                : request.Status == "disabled" 
+                ? (bool?)false 
+                : null;
 
-            if (filteredProducts == null || !filteredProducts.Any())
-            {
-                return new ProductModel.PaginationResponse(new List<ProductModel.ProductResponse>(), 0);
-            }
+            var activeProducts = await _productRepository.GetFiltered<Product>(p =>(
+                (isActive == null || p.IsActive == isActive)
+                && string.IsNullOrEmpty(request.Search) || p.Name.Contains(request.Search))
+                );
 
-            int page = filter.PageNumber ?? 1;
-            int size = filter.PageSize ?? 10;
 
-            var products = filteredProducts
-                 .OrderBy(p => p.Name)
-                 .Skip((page - 1) * size)
-                 .Take(size)
+            if (activeProducts is null || !activeProducts.Any())
+                throw new NoContentException("No se encontraron productos");
+
+            var products = activeProducts
                  .Select(p => new ProductModel.ProductResponse(
                      p.Id,
                      p.Sku,
@@ -71,9 +66,12 @@ namespace Dsw2025Tpi.Application.Services
                      p.StockQuantity,
                      p.IsActive
                  ))
-                 .ToList();
+                 .OrderBy(p => p.Sku)
+                 .Skip((request.PageNumber - 1) * request.PageSize ?? 0)
+                 .Take(request.PageSize ?? activeProducts.Count());
+                 
 
-            return new ProductModel.PaginationResponse(products, filteredProducts.Count());
+            return new ProductModel.PaginationResponse(products.ToList(), activeProducts.Count());
 
         }
 

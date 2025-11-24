@@ -29,6 +29,19 @@ namespace Dsw2025Tpi.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("admin")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAuthProducts([FromQuery] ProductModel.FilterProductRequest request)
+        {
+            var result = await _service.GetProducts(request);
+            if (result == null)
+            {
+                Response.Headers.Append("X-Message", "There are no active products");
+                return NoContent();
+            }
+            return Ok(result);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(Guid id)
         {
@@ -49,7 +62,7 @@ namespace Dsw2025Tpi.Api.Controllers
 
                 return BadRequest(firstError);
             }
-     
+    
                 var product = await _service.AddProduct(request);
                 return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
                 

@@ -1,4 +1,5 @@
 ﻿using Dsw2025Tpi.Application.Exceptions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text.Json;
@@ -33,19 +34,22 @@ namespace Dsw2025Tpi.Api.Middlewares
                 ArgumentException => HttpStatusCode.BadRequest,
                 EntityNotFoundException => HttpStatusCode.NotFound,
                 DuplicatedEntityException => HttpStatusCode.Conflict,
+                NoContentException => HttpStatusCode.NoContent,
                 DbUpdateException dbEx when dbEx.InnerException?.Message.Contains("duplicate") == true => HttpStatusCode.Conflict,
                 DbUpdateException => HttpStatusCode.BadRequest,
                 DatabaseUnavailableException => HttpStatusCode.ServiceUnavailable,
                 RoleSeedingException => HttpStatusCode.InternalServerError,
                 UserSeedingException => HttpStatusCode.InternalServerError,
+                
                 _ => HttpStatusCode.InternalServerError
             };
 
             var errorMessage = ex switch
             {
-                DuplicatedEntityException => ex.Message,
-                EntityNotFoundException => ex.Message,
                 ArgumentException => ex.Message,
+                EntityNotFoundException => ex.Message,
+                DuplicatedEntityException => ex.Message,
+                NoContentException => ex.Message,
                 DbUpdateException => ex.Message,
                 DatabaseUnavailableException => ex.Message,
                 RoleSeedingException => ex.Message,

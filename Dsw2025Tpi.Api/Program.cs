@@ -102,9 +102,10 @@ public class Program
         {
             options.AddPolicy("PermitirFrontend", policy =>
             {
-                policy.WithOrigins("https://localhost:7138", "http://localhost:3000")
+                policy.WithOrigins("http://localhost:5173")
                       .AllowAnyHeader()
-                      .AllowAnyMethod();
+                      .AllowAnyMethod()
+                      .AllowCredentials();  
             });
         });
 
@@ -119,9 +120,9 @@ public class Program
 
         await app.UseIdentitySeeding();
 
-        app.UseHttpsRedirection();
-
         app.UseCors("PermitirFrontend");
+
+        app.UseHttpsRedirection();
 
         app.UseAuthentication();
 
