@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Dsw2025Tpi.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,6 +16,8 @@ namespace Dsw2025Tpi.Data
         {
         }
 
+        public DbSet<Customer> Customers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -26,6 +29,16 @@ namespace Dsw2025Tpi.Data
             builder.Entity<IdentityUserLogin<string>>(b => { b.ToTable("UsuarioLogins"); });
             builder.Entity<IdentityRoleClaim<string>>(b => { b.ToTable("RolClaims"); });
             builder.Entity<IdentityUserToken<string>>(b => { b.ToTable("UsuarioTokens"); } );
+
+            builder.Entity<Customer>(entity =>
+            {
+                entity.ToTable("Customers");
+
+                entity.HasOne(c => c.User)
+                    .WithMany()
+                    .HasForeignKey(c => c.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }
