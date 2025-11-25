@@ -19,13 +19,14 @@ namespace Dsw2025Tpi.Api.Extensions
                 options.UseSeeding((c, t) =>
                 {
                     ((Dsw2025TpiContext)c).Seedwork<Product>("Sources\\products.json");
-                    ((Dsw2025TpiContext)c).Seedwork<Customer>("Sources\\customers.json");
+                    //((Dsw2025TpiContext)c).Seedwork<Customer>("Sources\\customers.json");
                 });
             });
 
             services.AddScoped<IRepository, EfRepository>();
             services.AddScoped<IProductsManagementService, ProductsManagementService>();
             services.AddScoped<IOrdersManagementService, OrdersManagementService>();
+            services.AddScoped<ICustomersManagementService, CustomersManagementService>();
 
             return services;
         }

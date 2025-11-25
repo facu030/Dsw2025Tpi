@@ -25,8 +25,8 @@ namespace Dsw2025Tpi.Application.Services
             return orders?.Select(o => new OrderModel.GetResponse(
                 o.Id,
                 o.CustomerId,
-                o.ShippingAddress,
-                o.BillingAddress,
+                //o.ShippingAddress,
+                //o.BillingAddress,
                 o.TotalAmount,
                 o.Date,
                 o.OrderItems.Select(item => new OrderItemModel.Response(
@@ -46,8 +46,8 @@ namespace Dsw2025Tpi.Application.Services
                 new OrderModel.GetResponse(
                     order.Id,
                     order.CustomerId,
-                    order.ShippingAddress,
-                    order.BillingAddress,
+                    //order.ShippingAddress,
+                    //order.BillingAddress,
                     order.TotalAmount,
                     order.Date,
                     order.OrderItems.Select(item => new OrderItemModel.Response(
@@ -63,8 +63,8 @@ namespace Dsw2025Tpi.Application.Services
 
         public async Task<OrderModel.AddResponse?> CreateOrder(OrderModel.OrderRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.ShippingAddress)) throw new ArgumentException("La dirección de envío no puede estar vacía.");
-            if (string.IsNullOrWhiteSpace(request.BillingAddress)) throw new ArgumentException("La dirección de facturación no puede estar vacía.");
+            //if (string.IsNullOrWhiteSpace(request.ShippingAddress)) throw new ArgumentException("La dirección de envío no puede estar vacía.");
+            //if (string.IsNullOrWhiteSpace(request.BillingAddress)) throw new ArgumentException("La dirección de facturación no puede estar vacía.");
             if (request.OrderItems == null || !request.OrderItems.Any()) throw new ArgumentException("La orden debe contener al menos un producto.");
 
             var customer = await _orderRepository.GetById<Customer>(request.CustomerId);
@@ -97,7 +97,7 @@ namespace Dsw2025Tpi.Application.Services
                 await _orderRepository.Update(product);
             }
 
-            var order = new Order(request.CustomerId, request.ShippingAddress, request.BillingAddress);
+            var order = new Order(request.CustomerId/*, request.ShippingAddress, request.BillingAddress*/);
             order.OrderItems = request.OrderItems.Select(item => new OrderItem(item.ProductId, item.Quantity, item.UnitPrice)).ToList();
             var createdOrder = await _orderRepository.Add(order);
             return new OrderModel.AddResponse(

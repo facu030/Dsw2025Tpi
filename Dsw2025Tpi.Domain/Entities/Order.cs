@@ -10,12 +10,12 @@ namespace Dsw2025Tpi.Domain.Entities
     public class Order : EntityBase
     {
         
-        public Order(Guid customerId, string shippingAddress, string billingAddress, string? notes = null )
+        public Order(Guid customerId /*string shippingAddress, string billingAddress, string? notes = null ) */)
         {
             CustomerId = customerId;
-            ShippingAddress = shippingAddress;
-            BillingAddress = billingAddress;
-            Notes = notes;
+            //ShippingAddress = shippingAddress;
+            //BillingAddress = billingAddress;
+            //Notes = notes;
         }
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public string ShippingAddress { get; set; }

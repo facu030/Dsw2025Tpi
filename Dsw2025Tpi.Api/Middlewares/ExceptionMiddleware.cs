@@ -60,9 +60,11 @@ namespace Dsw2025Tpi.Api.Middlewares
             var result = JsonSerializer.Serialize(new
             {
                 error = ex.Message,
+                inner = ex.InnerException?.Message,
                 type = ex.GetType().Name,
                 status = (int)status
             });
+
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)status;

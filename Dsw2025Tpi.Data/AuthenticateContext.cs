@@ -16,7 +16,7 @@ namespace Dsw2025Tpi.Data
         {
         }
 
-        public DbSet<Customer> Customers { get; set; }
+        //public DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,15 +30,15 @@ namespace Dsw2025Tpi.Data
             builder.Entity<IdentityRoleClaim<string>>(b => { b.ToTable("RolClaims"); });
             builder.Entity<IdentityUserToken<string>>(b => { b.ToTable("UsuarioTokens"); } );
 
-            builder.Entity<Customer>(entity =>
-            {
-                entity.ToTable("Customers");
+            //builder.Entity<Customer>(entity =>
+            //{
+            //    entity.ToTable("Customers");
 
-                entity.HasOne(c => c.User)
-                    .WithMany()
-                    .HasForeignKey(c => c.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
+            //    entity.HasOne(c => c.User)
+            //        .WithMany()
+            //        .HasForeignKey(c => c.UserId)
+            //        .OnDelete(DeleteBehavior.Restrict);
+            //});
         }
     }
 }

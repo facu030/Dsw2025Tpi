@@ -1,4 +1,5 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
+using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Application.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +14,19 @@ namespace Dsw2025Tpi.Api.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly JwtTokenService _jwtTokenService;
+        private readonly ICustomersManagementService _customersManagementService;
 
         public AuthenticateController(UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<IdentityUser> signInManager,
-            JwtTokenService jwtTokenService)
+            JwtTokenService jwtTokenService,
+            ICustomersManagementService customersManagementService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _jwtTokenService = jwtTokenService;
+            _customersManagementService = customersManagementService;
         }
 
         [HttpPost("login")]
@@ -50,28 +54,53 @@ namespace Dsw2025Tpi.Api.Controllers
         {
             var userExists = await _userManager.FindByNameAsync(request.Username);
             if (userExists != null)
-            {
                 return BadRequest("El usuario ya existe");
-            }
+
+            var roleName = string.IsNullOrWhiteSpace(request.Role) ? "Customer" : request.Role;
+
+            if (!await _roleManager.RoleExistsAsync(roleName))
+                return BadRequest($"El rol '{roleName}' no existe.");
+
             var user = new IdentityUser
             {
                 UserName = request.Username,
-                Email = request.Email,
-
+                Email = request.Email
             };
-            var result = await _userManager.CreateAsync(user, request.Password);
-            if (!result.Succeeded)
+
+            var userResult = await _userManager.CreateAsync(user, request.Password);
+
+            if(!userResult.Succeeded)
+                return BadRequest("Error al crear el usuario.");
+
+            var roleResult = await _userManager.AddToRoleAsync(user, roleName);
+
+            if (!roleResult.Succeeded)
             {
-                return BadRequest("Error al crear el usuario");
+                await _userManager.DeleteAsync(user); 
+                return BadRequest("No se pudo asignar el rol.");
             }
 
-            if (!await _roleManager.RoleExistsAsync(request.Role))
+            try
             {
-                return BadRequest($"El rol '{request.Role}' no existe.");
+                if (roleName == "Customer")
+                {
+                    var customerModel = new CustomerModel.CreateCustomerRequest(user.UserName, user.Email, user.Id);
+
+                    var customer = await _customersManagementService.CreateCustomer(customerModel);
+
+                    return Ok(new
+                    {
+                        Message = "Usuario y cliente creados exitosamente.",
+                        Customer = customer
+                    });
+                }
             }
-
-            await _userManager.AddToRoleAsync(user, request.Role);
-
+            catch
+            {
+                await _userManager.DeleteAsync(user); 
+                throw;
+            }
+            
             return Ok("Usuario creado exitosamente");
         }
     }

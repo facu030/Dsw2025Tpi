@@ -11,7 +11,7 @@ namespace Dsw2025Tpi.Application.Dtos
     {
         public record OrderRequest(Guid CustomerId, string ShippingAddress, string BillingAddress, ICollection<OrderItemModel.OrderItemRequest> OrderItems);
         public record AddResponse(Guid Id, Guid CustomerId, string? ShippingAddress, string? BillingAddress, decimal TotalAmount, DateTime? Date, ICollection<OrderItem> OrderItems);
-        public record GetResponse(Guid Id, Guid CustomerId, string? ShippingAddress, string? BillingAddress, decimal TotalAmount, DateTime? Date, ICollection<OrderItemModel.Response> OrderItems);
+        public record GetResponse(Guid Id, Guid CustomerId, /*string? ShippingAddress, string? BillingAddress,*/ decimal TotalAmount, DateTime? Date, ICollection<OrderItemModel.Response> OrderItems);
 
     }
 }
