@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 namespace Dsw2025Tpi.Application.Dtos
 {
     public record LoginModel(string Username, string Password);
-    public record LoginResponse(string Token, IdentityUser User, IdentityRole Role);
+    public record LoginResponse(string Token, IdentityUser User, string Role);
 
 }

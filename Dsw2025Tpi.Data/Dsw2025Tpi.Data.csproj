@@ -8,8 +8,8 @@
 
   <ItemGroup>
 	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.22" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.22" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.22">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
@@ -23,16 +23,11 @@
 	<None Update="Sources\categories.json">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	</None>
-	<None Update="Sources\customers.json">
-	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Update="Sources\products.json">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	</None>
   </ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Sources\" />
+	</ItemGroup>
 
 </Project>

@@ -32,13 +32,13 @@ namespace Dsw2025Tpi.Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAuthProducts([FromQuery] ProductModel.FilterProductRequest request)
         {
-            var result = await _service.GetProducts(request);
-            if (result == null)
+            var products = await _service.GetProducts(request);
+            if (products == null)
             {
                 Response.Headers.Append("X-Message", "There are no active products");
                 return NoContent();
             }
-            return Ok(result);
+            return Ok(products);
         }
 
         [HttpGet("{id}")]

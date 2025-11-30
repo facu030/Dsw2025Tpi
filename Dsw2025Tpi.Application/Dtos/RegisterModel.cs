@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Application.Dtos
 {
-    public record RegisterModel(string Username, string Email, string Password, string Role);
-    public record RegisterResponse(string Token, IdentityUser User, IdentityRole Role);
+    // Lo que manda el front en /api/auth/register
+    public record RegisterModel(string Username, string Email, string Password);
+
+    // Lo que devuelve el servicio de registro
+    public record RegisterResponse(string Token, IdentityUser User, string Role);
 }

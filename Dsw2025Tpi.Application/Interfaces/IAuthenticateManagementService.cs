@@ -11,5 +11,7 @@ namespace Dsw2025Tpi.Application.Interfaces
     {
         Task<LoginResponse> Login(LoginModel request);
         Task<RegisterResponse> Register(RegisterModel request);
+
+        Task ChangeUserRole(string userId, string role);
     }
 }

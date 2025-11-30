@@ -1,6 +1,7 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -16,6 +17,11 @@ namespace Dsw2025Tpi.Api.Controllers
         public AuthenticateController(IAuthenticateManagementService service)
         {
             _authenticateService = service;
+        }
+
+        public class ChangeRoleRequest
+        {
+            public string Role { get; set; } = null!;
         }
 
 
@@ -40,6 +46,14 @@ namespace Dsw2025Tpi.Api.Controllers
 
             return Ok(new { token = data.Token, user = userNormalized });
 
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("users/{userId}/role")]
+        public async Task<IActionResult> ChangeRole(string userId, [FromBody] ChangeRoleRequest request)
+        {
+            await _authenticateService.ChangeUserRole(userId, request.Role);
+            return Ok();
         }
     }
 }

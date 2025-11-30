@@ -46,10 +46,10 @@ namespace Dsw2025Tpi.Application.Services
                 ? (bool?)false 
                 : null;
 
-            var activeProducts = await _productRepository.GetFiltered<Product>(p =>(
-                (isActive == null || p.IsActive == isActive)
-                && string.IsNullOrEmpty(request.Search) || p.Name.Contains(request.Search))
-                );
+            var activeProducts = await _productRepository.GetFiltered<Product>(p =>
+    (isActive == null || p.IsActive == isActive)
+    && (string.IsNullOrEmpty(request.Search) || p.Name.Contains(request.Search!))
+);
 
 
             if (activeProducts is null || !activeProducts.Any())

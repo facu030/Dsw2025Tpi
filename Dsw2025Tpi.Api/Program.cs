@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Diagnostics.Metrics;
 using System.Text;
 
-namespace Dsw2025Tpi.Api;
+
+
+namespace Dsw2025Tpi.Api;          
 
 public class Program
 {
@@ -19,10 +19,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(o =>
         {
@@ -76,19 +74,18 @@ public class Program
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
         .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtConfig["Issuer"],
-                    ValidAudience = jwtConfig["Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                };
-            }
-            );
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtConfig["Issuer"],
+                ValidAudience = jwtConfig["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+            };
+        });
 
         builder.Services.AddDomainServices(builder.Configuration);
         builder.Services.AddSingleton<JwtTokenService>();
@@ -105,13 +102,12 @@ public class Program
                 policy.WithOrigins("http://localhost:5173")
                       .AllowAnyHeader()
                       .AllowAnyMethod()
-                      .AllowCredentials();  
+                      .AllowCredentials();
             });
         });
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -125,7 +121,6 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthentication();
-
         app.UseAuthorization();
 
         app.MapControllers();
@@ -135,6 +130,5 @@ public class Program
         app.MapHealthChecks("/healthcheck");
 
         app.Run();
-
     }
 }
