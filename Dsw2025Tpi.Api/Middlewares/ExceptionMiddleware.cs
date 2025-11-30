@@ -40,31 +40,54 @@ namespace Dsw2025Tpi.Api.Middlewares
                 DatabaseUnavailableException => HttpStatusCode.ServiceUnavailable,
                 RoleSeedingException => HttpStatusCode.InternalServerError,
                 UserSeedingException => HttpStatusCode.InternalServerError,
-                
+                Application.Exceptions.ApplicationException => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError
             };
 
-            var errorMessage = ex switch
+            string errorMessage = ex.Message;
+
+            var errorsProperty = ex.GetType().GetProperty("Errors");
+            if (errorsProperty != null)
             {
-                ArgumentException => ex.Message,
-                EntityNotFoundException => ex.Message,
-                DuplicatedEntityException => ex.Message,
-                NoContentException => ex.Message,
-                DbUpdateException => ex.Message,
-                DatabaseUnavailableException => ex.Message,
-                RoleSeedingException => ex.Message,
-                UserSeedingException => ex.Message,
-                _ => ex.Message
-            };
+                if (errorsProperty.GetValue(ex) is IEnumerable<object> errors)
+                {
+                    // 🔥 Convertir el array de errores en string separado por ", "
+                    var joinedErrors = errors
+                        .Select(e =>
+                        {
+                            var descProp = e.GetType().GetProperty("Description");
+                            var codeProp = e.GetType().GetProperty("Code");
+
+                            // IdentityError tiene Description, otros tipos pueden tener Message
+                            if (descProp != null)
+                                return descProp.GetValue(e)?.ToString();
+
+                            if (codeProp != null)
+                                return codeProp.GetValue(e)?.ToString();
+
+                            var msgProp = e.GetType().GetProperty("Message");
+                            if (msgProp != null)
+                                return msgProp.GetValue(e)?.ToString();
+
+                            return e.ToString();
+                        })
+                        .Where(s => !string.IsNullOrWhiteSpace(s))
+                        .ToList();
+
+                    if (joinedErrors.Any())
+                    {
+                        errorMessage = string.Join(", ", joinedErrors);
+                    }
+                }
+            }
 
             var result = JsonSerializer.Serialize(new
             {
-                error = ex.Message,
+                error = errorMessage,
                 inner = ex.InnerException?.Message,
                 type = ex.GetType().Name,
                 status = (int)status
             });
-
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)status;
