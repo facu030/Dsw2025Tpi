@@ -63,43 +63,80 @@ namespace Dsw2025Tpi.Application.Services
 
         public async Task<OrderModel.AddResponse?> CreateOrder(OrderModel.OrderRequest request)
         {
-            //if (string.IsNullOrWhiteSpace(request.ShippingAddress)) throw new ArgumentException("La dirección de envío no puede estar vacía.");
-            //if (string.IsNullOrWhiteSpace(request.BillingAddress)) throw new ArgumentException("La dirección de facturación no puede estar vacía.");
-            if (request.OrderItems == null || !request.OrderItems.Any()) throw new ArgumentException("La orden debe contener al menos un producto.");
+            if (request is null) throw new ArgumentNullException(nameof(request));
 
+            if (string.IsNullOrWhiteSpace(request.ShippingAddress))
+                throw new ArgumentException("La dirección de envío no puede estar vacía.");
+
+            if (string.IsNullOrWhiteSpace(request.BillingAddress))
+                throw new ArgumentException("La dirección de facturación no puede estar vacía.");
+
+            if (request.OrderItems == null || !request.OrderItems.Any())
+                throw new ArgumentException("La orden debe contener al menos un producto.");
+
+            // 1) Validar cliente
             var customer = await _orderRepository.GetById<Customer>(request.CustomerId);
-            if (customer == null) throw new EntityNotFoundException($"No existe un cliente con el ID {request.CustomerId}");
+            if (customer == null)
+                throw new EntityNotFoundException($"No existe un cliente con el ID {request.CustomerId}");
 
-            var duplicateProductIds = request.OrderItems.GroupBy(x => x.ProductId).Where(g => g.Count() > 1).Select(g => g.Key);
-            if (duplicateProductIds.Any()) throw new DuplicatedEntityException("La orden contiene productos duplicados");
+            // 2) Validar duplicados
+            var duplicateProductIds = request.OrderItems
+                .GroupBy(x => x.ProductId)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .ToList();
 
+            if (duplicateProductIds.Any())
+                throw new DuplicatedEntityException("La orden contiene productos duplicados");
+
+            // 3) Traer productos involucrados
             var productIds = request.OrderItems.Select(x => x.ProductId).Distinct().ToList();
-            var products = await _orderRepository.GetFiltered<Product>(p => productIds.Contains(p.Id));
+            var products = (await _orderRepository.GetFiltered<Product>(p => productIds.Contains(p.Id)))?.ToList()
+                           ?? new List<Product>();
 
+            // 4) Validaciones por item
             foreach (var item in request.OrderItems)
             {
-                var product = products?.FirstOrDefault(p => p.Id == item.ProductId);
+                var product = products.FirstOrDefault(p => p.Id == item.ProductId);
+                if (product is null)
+                    throw new EntityNotFoundException($"Producto con ID {item.ProductId} no fue encontrado.");
 
-                if (product is null) throw new EntityNotFoundException($"Producto con ID {item.ProductId} no fue encontrado.");
+                if (item.Quantity <= 0)
+                    throw new ArgumentException($"La cantidad para '{product.Name}' debe ser mayor que 0.");
 
-                if (item.Quantity <= 0) throw new ArgumentException($"La cantidad para '{product.Name}' debe ser mayor que 0.");
+                if (item.Quantity > product.StockQuantity)
+                    throw new ArgumentException(
+                        $"No hay stock suficiente para '{product.Name}'. Solicitado: {item.Quantity}, disponible: {product.StockQuantity}"
+                    );
 
-                if (item.Quantity > product.StockQuantity) throw new ArgumentException($"No hay stock suficiente para '{product.Name}'. Solicitado: {item.Quantity}, disponible: {product.StockQuantity}");
-
-                if (item.UnitPrice != product.CurrentUnitPrice) throw new ArgumentException($"El precio de '{product.Name}' no coincide con el actual. Esperado: {product.CurrentUnitPrice}, recibido: {item.UnitPrice}");
-
+                if (item.UnitPrice != product.CurrentUnitPrice)
+                    throw new ArgumentException(
+                        $"El precio de '{product.Name}' no coincide con el actual. Esperado: {product.CurrentUnitPrice}, recibido: {item.UnitPrice}"
+                    );
             }
 
+            // 5) Descontar stock
             foreach (var item in request.OrderItems)
             {
-                var product = products?.FirstOrDefault(p => p.Id == item.ProductId);
+                var product = products.First(p => p.Id == item.ProductId);
                 product.StockQuantity -= item.Quantity;
                 await _orderRepository.Update(product);
             }
 
-            var order = new Order(request.CustomerId/*, request.ShippingAddress, request.BillingAddress*/);
-            order.OrderItems = request.OrderItems.Select(item => new OrderItem(item.ProductId, item.Quantity, item.UnitPrice)).ToList();
+            // 6) Crear orden y setear direcciones
+            var order = new Order(request.CustomerId);
+            order.ShippingAddress = request.ShippingAddress;
+            order.BillingAddress = request.BillingAddress;
+          
+
+            order.OrderItems = request.OrderItems
+                .Select(item => new OrderItem(item.ProductId, item.Quantity, item.UnitPrice))
+                .ToList();
+
+            // 7) Guardar
             var createdOrder = await _orderRepository.Add(order);
+
+            // 8) Respuesta
             return new OrderModel.AddResponse(
                 createdOrder.Id,
                 createdOrder.CustomerId,
@@ -107,8 +144,8 @@ namespace Dsw2025Tpi.Application.Services
                 createdOrder.BillingAddress,
                 createdOrder.TotalAmount,
                 createdOrder.Date,
-                createdOrder.OrderItems);
+                createdOrder.OrderItems
+            );
         }
-
     }
-}
+    }

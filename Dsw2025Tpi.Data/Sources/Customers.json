@@ -1,0 +1,62 @@
+[
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa2",
+        "eMail": "juan.perez@gmail.com",
+        "name": "Juan Pérez",
+        "phoneNumber": "+5491156789012"
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa7",
+        "eMail": "maria.gonzalez@gmail.com",
+        "name": "María González",
+        "phoneNumber": "+5491156789013"
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa8",
+        "eMail": "carlos.rodriguez@gmail.com",
+        "name": "Carlos Rodríguez",
+        "phoneNumber": "+5491156789014"
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa9",
+        "eMail": "laura.martinez@gmail.com",
+        "name": "Laura Martínez",
+        "phoneNumber": "+5491156789015"
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afb0",
+        "eMail": "pedro.sanchez@gmail.com",
+        "name": "Pedro Sánchez",
+        "phoneNumber": "+5491156789016"
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afb1",
+        "eMail": "ana.lopez@gmail.com",
+        "name": "Ana López",
+        "phoneNumber": "+5491156789017"
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afb2",
+        "eMail": "diego.fernandez@gmail.com",
+        "name": "Diego Fernández",
+        "phoneNumber": "+5491156789018"
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afb3",
+        "eMail": "sofia.garcia@gmail.com",
+        "name": "Sofía García",
+        "phoneNumber": "+5491156789019"
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afb4",
+        "eMail": "jorge.diaz@gmail.com",
+        "name": "Jorge Díaz",
+        "phoneNumber": "+5491156789020"
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afb5",
+        "eMail": "luciana.romero@gmail.com",
+        "name": "Luciana Romero",
+        "phoneNumber": "+5491156789021"
+    }
+]
