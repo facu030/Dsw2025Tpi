@@ -35,6 +35,21 @@ public class OrdersController : ControllerBase
         if (order == null) return NotFound($"No se encontró la orden con el id {id}");
         return Ok(order);
     }
+    [HttpGet("admin")]
+    // Si quisieras restringir solo a admins en algún momento:
+    // [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetAuthOrders([FromQuery] OrderModel.FilterOrder request)
+    {
+        var result = await _service.GetOrders(request);
+
+        if (result == null || result.Total == 0)
+        {
+            Response.Headers.Append("X-Message", "No se encontraron órdenes");
+            return NoContent(); // 204
+        }
+
+        return Ok(result); // 200 con OrderItems + Total
+    }
 
     [HttpPost()]
     public async Task<IActionResult> CreateOrder([FromBody] OrderModel.OrderRequest request)

@@ -12,5 +12,7 @@ namespace Dsw2025Tpi.Application.Interfaces
         Task<IEnumerable<OrderModel.GetResponse>?> GetOrders();
         Task<OrderModel.GetResponse?> GetOrderById(Guid id);
         Task<OrderModel.AddResponse> CreateOrder(OrderModel.OrderRequest request);
+        // NUEVO: listado liviano con filtros + paginación (para dashboard)
+        Task<OrderModel.ResponsePagination> GetOrders(OrderModel.FilterOrder request);
     }
 }

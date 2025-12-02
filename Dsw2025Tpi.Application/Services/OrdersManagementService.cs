@@ -2,7 +2,9 @@
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Domain.Entities;
+using Dsw2025Tpi.Domain.Enums;
 using Dsw2025Tpi.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +15,16 @@ namespace Dsw2025Tpi.Application.Services
 {
     public class OrdersManagementService : IOrdersManagementService
     {
-        public readonly IRepository _orderRepository;
-        public OrdersManagementService(IRepository orderRepository)
+        private readonly IRepository _orderRepository;
+        private readonly ILogger<OrdersManagementService> _logger;
+
+        public OrdersManagementService(
+            IRepository orderRepository,
+            ILogger<OrdersManagementService> logger)
         {
             _orderRepository = orderRepository;
+            _logger = logger;
         }
-
         public async Task<IEnumerable<OrderModel.GetResponse>?> GetOrders()
         {
             var orders = await _orderRepository.GetAll<Order>($"{nameof(Order.OrderItems)}.{nameof(OrderItem.Product)}");
@@ -147,5 +153,65 @@ namespace Dsw2025Tpi.Application.Services
                 createdOrder.OrderItems
             );
         }
+        // === NUEVO: obtener todas las órdenes SOLO para listar (sin detalle) ===
+        public async Task<OrderModel.ResponsePagination> GetOrders(OrderModel.FilterOrder request)
+        {
+            _logger.LogInformation("Iniciando GetOrders (dashboard) con filtros {@request}", request);
+
+            // 1) Traducir Status (string) a enum OrderStatus? (o null si viene "all" o vacío)
+            OrderStatus? statusFilter = null;
+            if (!string.IsNullOrWhiteSpace(request.Status) &&
+                !string.Equals(request.Status, "all", StringComparison.OrdinalIgnoreCase))
+            {
+                if (Enum.TryParse<OrderStatus>(request.Status, true, out var parsedStatus))
+                {
+                    statusFilter = parsedStatus;
+                }
+            }
+
+            // 2) Consulta a BD con GetFiltered, incluyendo solo Customer
+            var filteredOrders = await _orderRepository.GetFiltered<Order>(
+           o =>
+               (statusFilter == null || o.Status == statusFilter) &&
+               (string.IsNullOrEmpty(request.Search) ||
+                (o.Customer != null && o.Customer.Name.Contains(request.Search))),
+           nameof(Order.Customer),
+           nameof(Order.OrderItems)
+       );
+
+
+            // 3) Si no hay órdenes, devolvemos estructura vacía
+            if (filteredOrders is null || !filteredOrders.Any())
+            {
+                return new OrderModel.ResponsePagination(
+                    new List<OrderModel.OrderResponseEasy>(),
+                    0
+                );
+            }
+
+            // 4) Proyección: mapeamos a OrderResponseEasy
+            var pageNumber = request.PageNumber ?? 1;
+            var pageSize = request.PageSize ?? 10;
+
+            var ordersMapped = filteredOrders
+                .Select(order => new OrderModel.OrderResponseEasy(
+                    order.Id,
+                    order.Customer?.Name ?? "Cliente no disponible",
+                    order.Date,
+                    order.Status.ToString(),
+                    order.TotalAmount
+                ))
+                .OrderByDescending(o => o.Date)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // 5) Retornamos la paginación: lista + total (sin paginar)
+            return new OrderModel.ResponsePagination(
+                ordersMapped,
+                filteredOrders.Count()
+            );
+        }
+
     }
-    }
+}
