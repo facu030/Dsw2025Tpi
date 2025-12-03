@@ -1,11 +1,8 @@
-﻿using Dsw2025Tpi.Application.Dtos;
-using Dsw2025Tpi.Application.Exceptions;
+﻿using System.Security.Claims; // para leer el userId del token
+using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Interfaces;
-using Dsw2025Tpi.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dsw2025Tpi.Api.Controllers;
 
@@ -15,12 +12,14 @@ namespace Dsw2025Tpi.Api.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IOrdersManagementService _service;
+
     public OrdersController(IOrdersManagementService service)
     {
         _service = service;
     }
 
-    [HttpGet()]
+    // 🔹 Endpoint "viejo" general (lo dejamos igual)
+    [HttpGet]
     public async Task<IActionResult> GetOrders()
     {
         var orders = await _service.GetOrders();
@@ -28,6 +27,7 @@ public class OrdersController : ControllerBase
         return Ok(orders);
     }
 
+    // 🔹 Obtener una orden por Id (igual)
     [HttpGet("{id}")]
     public async Task<IActionResult> GetOrderById(Guid id)
     {
@@ -35,8 +35,9 @@ public class OrdersController : ControllerBase
         if (order == null) return NotFound($"No se encontró la orden con el id {id}");
         return Ok(order);
     }
+
+    // 🔹 Listado admin con filtros (igual)
     [HttpGet("admin")]
-    // Si quisieras restringir solo a admins en algún momento:
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAuthOrders([FromQuery] OrderModel.FilterOrder request)
     {
@@ -51,13 +52,31 @@ public class OrdersController : ControllerBase
         return Ok(result); // 200 con OrderItems + Total
     }
 
-    [HttpPost()]
+    // 🔹 Endpoint "viejo" que recibe customerId (lo dejamos para pruebas / admin)
+    [HttpPost]
     public async Task<IActionResult> CreateOrder([FromBody] OrderModel.OrderRequest request)
     {
-
-            var order = await _service.CreateOrder(request);
-            return Ok(order);
-       
+        var order = await _service.CreateOrder(request);
+        return Ok(order);
     }
 
+    // 🔹 NUEVO: crear orden para el usuario autenticado (sin customerId en el body)
+    // POST: /api/orders/me
+    [HttpPost("me")]
+    public async Task<IActionResult> CreateOrderForCurrentUser(
+        [FromBody] OrderModel.OrderFromUserRequest request)
+    {
+        // 1) Tomamos el userId desde el token (claim estándar de Identity)
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized("No se pudo identificar al usuario autenticado.");
+        }
+
+        // 2) Delegamos en el servicio que crea la orden asociada a ese usuario
+        var order = await _service.CreateOrderForUserAsync(userId, request);
+
+        return Ok(order);
+    }
 }

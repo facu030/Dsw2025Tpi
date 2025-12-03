@@ -10,7 +10,7 @@ namespace Dsw2025Tpi.Application.Dtos
         // 1) Crear orden (POST)
         // ---------------------------
 
-        // Request que recibe el endpoint de creación de orden
+        // Request que recibe el endpoint de creación de orden (modo viejo, con CustomerId)
         public record OrderRequest(
             Guid CustomerId,
             string ShippingAddress,
@@ -18,33 +18,36 @@ namespace Dsw2025Tpi.Application.Dtos
             ICollection<OrderItemModel.OrderItemRequest> OrderItems
         );
 
-        // Respuesta cuando se crea una orden (puede usarse también internamente)
-        public record AddResponse(
-            Guid Id,
-            Guid CustomerId,
-            string? ShippingAddress,
-            string? BillingAddress,
-            decimal TotalAmount,
-            DateTime? Date,
-            ICollection<OrderItem> OrderItems
+        // ⭐ NUEVO: Request para el endpoint que trabaja por USUARIO (sin CustomerId en el body)
+        public record OrderFromUserRequest(
+            string ShippingAddress,
+            string BillingAddress,
+            ICollection<OrderItemModel.OrderItemRequest> OrderItems
         );
 
-        // Respuesta "completa" para GET /api/orders/{id} o similar
+        public record AddResponse(
+        Guid Id,
+        Guid? CustomerId,   // 👈 ahora nullable
+        string? ShippingAddress,
+        string? BillingAddress,
+        decimal TotalAmount,
+        DateTime? Date,
+        ICollection<OrderItem> OrderItems
+    );
+
         public record GetResponse(
             Guid Id,
-            Guid CustomerId,
-            /*string? ShippingAddress,
-            string? BillingAddress,*/
+            Guid? CustomerId,   // 👈 ahora nullable también
             decimal TotalAmount,
             DateTime? Date,
             ICollection<OrderItemModel.Response> OrderItems
         );
 
+
         // ---------------------------
         // 2) Listado para el dashboard (cards)
         // ---------------------------
 
-        // Lo que ve el dashboard en cada card del listado de órdenes
         public record OrderResponseEasy(
             Guid Id,
             string CustomerName,
@@ -57,18 +60,13 @@ namespace Dsw2025Tpi.Application.Dtos
         // 3) Filtros y paginación
         // ---------------------------
 
-        // Filtros que vienen por query string:
-        // ?Status=...&Search=...&PageNumber=1&PageSize=10
         public record FilterOrder(
-            string? Status,     // Pending / Completed / Canceled
-            string? Search,     // texto para cliente o Id
-            int? PageNumber,    // si viene null, en el service se pone 1
-            int? PageSize       // si viene null, en el service se pone 10
+            string? Status,
+            string? Search,
+            int? PageNumber,
+            int? PageSize
         );
 
-        // Respuesta paginada:
-        // - OrderItems: lista de las órdenes "livianas"
-        // - Total: cuántas hay en total según el filtro
         public record ResponsePagination(
             List<OrderResponseEasy> OrderItems,
             int Total
