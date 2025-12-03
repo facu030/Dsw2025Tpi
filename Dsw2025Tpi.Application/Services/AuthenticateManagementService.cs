@@ -11,20 +11,17 @@ namespace Dsw2025Tpi.Application.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly JwtTokenService _jwtTokenService;
-        private readonly ICustomersManagementService _customersManagementService;
 
         public AuthenticateManagementService(
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            SignInManager<IdentityUser> signInManager,
-            JwtTokenService jwtTokenService,
-            ICustomersManagementService customersManagementService)
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        SignInManager<IdentityUser> signInManager,
+        JwtTokenService jwtTokenService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _jwtTokenService = jwtTokenService;
-            _customersManagementService = customersManagementService;
         }
 
         public async Task<LoginResponse> Login(LoginModel request)
@@ -63,7 +60,7 @@ namespace Dsw2025Tpi.Application.Services
             // primer user → Admin, resto → User
             var roleName = isFirstUser ? "Admin" : "User";
 
-            // aseguramos que el rol exista (aunque ya lo seeds en IdentitySeederExtensions)
+            // aseguramos que el rol exista (por si falla el seeding)
             if (!await _roleManager.RoleExistsAsync(roleName))
                 await _roleManager.CreateAsync(new IdentityRole(roleName));
 
@@ -87,26 +84,7 @@ namespace Dsw2025Tpi.Application.Services
                 throw new ArgumentException("No se pudo asignar el rol.");
             }
 
-            try
-            {
-                // si es un usuario normal, lo consideramos cliente
-                if (roleName == "User")
-                {
-                    var customerModel = new CustomerModel.CreateCustomerRequest(
-                        user.UserName!,
-                        user.Email!,
-                        user.Id
-                    );
-
-                    await _customersManagementService.CreateCustomer(customerModel);
-                }
-            }
-            catch
-            {
-                // si falla crear el customer, borramos el user para no dejar datos colgados
-                await _userManager.DeleteAsync(user);
-                throw;
-            }
+            // 👇 👉 YA NO SE CREA CUSTOMER AQUÍ 👈 👆
 
             var token = _jwtTokenService.GenerateToken(user.UserName!, roleName);
 

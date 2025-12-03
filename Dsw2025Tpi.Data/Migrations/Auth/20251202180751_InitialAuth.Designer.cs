@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Dsw2025Tpi.Data.Migrations.Authenticate
+namespace Dsw2025Tpi.Data.Migrations.Auth
 {
     [DbContext(typeof(AuthenticateContext))]
-    [Migration("20251201015408_Authenticate_Model")]
-    partial class Authenticate_Model
+    [Migration("20251202180751_InitialAuth")]
+    partial class InitialAuth
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -9,10 +9,7 @@ public static class DomainServicesExtensions
 {
     public static IServiceCollection AddDomainServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<Dsw2025TpiContext>(options =>
-        {
-            options.UseSqlServer(configuration.GetConnectionString("Dsw2025TpiEntities"));
-        });
+       
 
         services.AddScoped<IRepository, EfRepository>();
         services.AddScoped<IProductsManagementService, ProductsManagementService>();

@@ -4,19 +4,16 @@ using Dsw2025Tpi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Dsw2025Tpi.Data.Migrations.Authenticate
+namespace Dsw2025Tpi.Data.Migrations.Auth
 {
     [DbContext(typeof(AuthenticateContext))]
-    [Migration("20251130221809_InitialIdentity")]
-    partial class InitialIdentity
+    partial class AuthenticateContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

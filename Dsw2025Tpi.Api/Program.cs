@@ -11,7 +11,7 @@ using System.Text;
 
 
 
-namespace Dsw2025Tpi.Api;          
+namespace Dsw2025Tpi.Api;
 
 public class Program
 {
@@ -68,6 +68,12 @@ public class Program
         var keyText = jwtConfig["Key"] ?? throw new ArgumentException("JWT Key");
         var key = Encoding.UTF8.GetBytes(keyText);
 
+
+
+
+
+
+
         builder.Services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -88,11 +94,16 @@ public class Program
         });
 
         builder.Services.AddDomainServices(builder.Configuration);
+
+        builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DomainConnection"));
+        });
         builder.Services.AddSingleton<JwtTokenService>();
 
         builder.Services.AddDbContext<AuthenticateContext>(options =>
         {
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiEntities"));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("AuthConnection"));
         });
 
         builder.Services.AddCors(options =>
@@ -115,6 +126,12 @@ public class Program
         }
 
         await app.UseIdentitySeeding();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<Dsw2025TpiContext>();
+            await JsonSeeder.SeedAsync(context);
+        }
 
         app.UseCors("PermitirFrontend");
 
