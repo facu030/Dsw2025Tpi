@@ -19,15 +19,4 @@
 		<ProjectReference Include="..\Dsw2025Tpi.Domain\Dsw2025Tpi.Domain.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	<None Update="Sources\categories.json">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	</None>
-  </ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Sources\" />
-	</ItemGroup>
-
 </Project>

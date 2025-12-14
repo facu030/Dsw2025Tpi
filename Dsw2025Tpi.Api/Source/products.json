@@ -1,0 +1,82 @@
+[
+  {
+    "id": "b6e2e2c2-7e2a-4e2e-9b2a-1c2e2e2e2e2e",
+    "sku": "7798186031828",
+    "name": "CARAMELO MASTICABLE DROPSY X700G",
+    "currentUnitPrice": 6292.6,
+    "isActive": true,
+    "subCategoryId": "F1237C55-CFED-4309-99CE-1E22B5D9ABFF"
+  },
+  {
+    "id": "a1f3c4d5-6b7a-4c8d-9e0f-1a2b3c4d5e6f",
+    "sku": "7798290580052",
+    "name": "JUGO TUTTI NARANJA X200ML X1U",
+    "currentUnitPrice": 194.4,
+    "isActive": true,
+    "subCategoryId": "F1237C55-CFED-4309-99CE-1E22B5D9ABFF"
+  },
+  {
+    "id": "c9d8e7f6-5a4b-3c2d-1e0f-9a8b7c6d5e4f",
+    "sku": "7798197300265",
+    "name": "TOSTADA DE ARROZ DULCE X150G",
+    "currentUnitPrice": 921.2,
+    "isActive": false,
+    "subCategoryId": "1B9D49C3-0B73-423C-8D32-8B00E98BFEDF"
+  },
+  {
+    "id": "e2f1d0c9-b8a7-6c5d-4e3f-2a1b0c9d8e7f",
+    "sku": "7798186032825",
+    "name": "CONFITE BILLIKEN X50G",
+    "currentUnitPrice": 1380,
+    "isActive": true,
+    "subCategoryId": "F1237C55-CFED-4309-99CE-1E22B5D9ABFF"
+  },
+  {
+    "id": "f0e1d2c3-b4a5-6c7d-8e9f-0a1b2c3d4e5f",
+    "sku": "7798228640261",
+    "name": "BARRA DE ARROZ CROWIE X12G",
+    "currentUnitPrice": 358.4,
+    "isActive": true,
+    "subCategoryId": "F1237C55-CFED-4309-99CE-1E22B5D9ABFF"
+  },
+  {
+    "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "sku": "7798180670016",
+    "name": "TUTUCA COLOR X30U",
+    "currentUnitPrice": 3464.4,
+    "isActive": true,
+    "subCategoryId": "F1237C55-CFED-4309-99CE-1E22B5D9ABFF"
+  },
+  {
+    "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+    "sku": "7798186033464",
+    "name": "GOMITA BILLIKEN 12UX30G",
+    "currentUnitPrice": 7322.6,
+    "isActive": false,
+    "subCategoryId": "F1237C55-CFED-4309-99CE-1E22B5D9ABFF"
+  },
+  {
+    "id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+    "sku": "7798228640353",
+    "name": "MIX FRUTOS CHEVERE X30G",
+    "currentUnitPrice": 1088.8,
+    "isActive": true,
+    "subCategoryId": "486A88CC-AC07-4D0D-906F-92CD38D8DBA8"
+  },
+  {
+    "id": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+    "sku": "7798178802306",
+    "name": "BUDIN DOS EN UNO C/FRUTA X150G",
+    "currentUnitPrice": 1478.6,
+    "isActive": true,
+    "subCategoryId": "1B9D49C3-0B73-423C-8D32-8B00E98BFEDF"
+  },
+  {
+    "id": "568268c2-9eb2-4fa5-9874-60884df39122",
+    "sku": "7798180700126",
+    "name": "DISCO CROCANTE CHOCOLATE X60G",
+    "currentUnitPrice": 2139.2,
+    "isActive": true,
+    "subCategoryId": "F1237C55-CFED-4309-99CE-1E22B5D9ABFF"
+  }
+]

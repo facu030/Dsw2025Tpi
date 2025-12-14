@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Dsw2025Tpi.Data.Migrations
+namespace Dsw2025Tpi.Data.Migrations.Domain
 {
     [DbContext(typeof(Dsw2025TpiContext))]
-    [Migration("20251130221638_InitialDomain")]
-    partial class InitialDomain
+    [Migration("20251203174657_AddUserIdToOrders")]
+    partial class AddUserIdToOrders
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,7 +62,7 @@ namespace Dsw2025Tpi.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid?>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Date")
@@ -79,6 +79,9 @@ namespace Dsw2025Tpi.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -157,9 +160,7 @@ namespace Dsw2025Tpi.Data.Migrations
                 {
                     b.HasOne("Dsw2025Tpi.Domain.Entities.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId");
 
                     b.Navigation("Customer");
                 });

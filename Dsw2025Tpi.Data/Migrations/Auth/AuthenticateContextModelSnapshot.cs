@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Dsw2025Tpi.Data.Migrations.Authenticate
+namespace Dsw2025Tpi.Data.Migrations.Auth
 {
     [DbContext(typeof(AuthenticateContext))]
     partial class AuthenticateContextModelSnapshot : ModelSnapshot

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Dsw2025Tpi.Data.Migrations
+namespace Dsw2025Tpi.Data.Migrations.Domain
 {
     /// <inheritdoc />
     public partial class InitialDomain : Migration

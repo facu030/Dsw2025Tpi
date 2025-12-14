@@ -11,6 +11,16 @@ namespace Dsw2025Tpi.Application.Interfaces
     {
         Task<IEnumerable<OrderModel.GetResponse>?> GetOrders();
         Task<OrderModel.GetResponse?> GetOrderById(Guid id);
+
         Task<OrderModel.AddResponse> CreateOrder(OrderModel.OrderRequest request);
+
+        //crear orden para el usuario autenticado (sin CustomerId)
+        Task<OrderModel.AddResponse> CreateOrderForUserAsync(
+            string userId,
+            OrderModel.OrderFromUserRequest request
+        );
+
+        //listado con filtros + paginación (para dashboard)
+        Task<OrderModel.ResponsePagination> GetOrders(OrderModel.FilterOrder request);
     }
 }
