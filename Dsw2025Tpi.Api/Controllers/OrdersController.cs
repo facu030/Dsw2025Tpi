@@ -1,4 +1,4 @@
-﻿using System.Security.Claims; // para leer el userId del token
+﻿using System.Security.Claims;
 using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +18,6 @@ public class OrdersController : ControllerBase
         _service = service;
     }
 
-    // 🔹 Endpoint "viejo" general (lo dejamos igual)
     [HttpGet]
     public async Task<IActionResult> GetOrders()
     {
@@ -27,7 +26,6 @@ public class OrdersController : ControllerBase
         return Ok(orders);
     }
 
-    // 🔹 Obtener una orden por Id (igual)
     [HttpGet("{id}")]
     public async Task<IActionResult> GetOrderById(Guid id)
     {
@@ -36,7 +34,6 @@ public class OrdersController : ControllerBase
         return Ok(order);
     }
 
-    // 🔹 Listado admin con filtros (igual)
     [HttpGet("admin")]
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAuthOrders([FromQuery] OrderModel.FilterOrder request)
@@ -52,7 +49,7 @@ public class OrdersController : ControllerBase
         return Ok(result); // 200 con OrderItems + Total
     }
 
-    // 🔹 Endpoint "viejo" que recibe customerId (lo dejamos para pruebas / admin)
+    // Endpoint viejo que recibe customerId (lo dejamos para pruebas / admin)
     [HttpPost]
     public async Task<IActionResult> CreateOrder([FromBody] OrderModel.OrderRequest request)
     {
@@ -60,13 +57,13 @@ public class OrdersController : ControllerBase
         return Ok(order);
     }
 
-    // 🔹 NUEVO: crear orden para el usuario autenticado (sin customerId en el body)
+    // nuevo end para crear orden para el usuario autenticado (sin customerId en el body)
     // POST: /api/orders/me
     [HttpPost("me")]
     public async Task<IActionResult> CreateOrderForCurrentUser(
         [FromBody] OrderModel.OrderFromUserRequest request)
     {
-        // 1) Tomamos el userId desde el token (claim estándar de Identity)
+        //Tomamos el userId desde el token (claim estándar de Identity)
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrEmpty(userId))
@@ -74,7 +71,7 @@ public class OrdersController : ControllerBase
             return Unauthorized("No se pudo identificar al usuario autenticado.");
         }
 
-        // 2) Delegamos en el servicio que crea la orden asociada a ese usuario
+        //Delegamos en el servicio que crea la orden asociada a ese usuario
         var order = await _service.CreateOrderForUserAsync(userId, request);
 
         return Ok(order);

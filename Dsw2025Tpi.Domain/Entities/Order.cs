@@ -7,14 +7,14 @@ namespace Dsw2025Tpi.Domain.Entities
 {
     public class Order : EntityBase
     {
-        // ✅ NUEVO: constructor vacío para el flujo por USUARIO
+        //constructor vacío para el flujo por USUARIO
         public Order()
         {
             Date = DateTime.UtcNow;
             Status = OrderStatus.Pending;
         }
 
-        // ✅ Constructor viejo: para el flujo con CustomerId (sigue funcionando)
+        //constructor viejo para el flujo con CustomerId (sigue funcionando)
         public Order(Guid customerId) : this()
         {
             CustomerId = customerId;
@@ -29,11 +29,11 @@ namespace Dsw2025Tpi.Domain.Entities
 
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
-        // ✅ AHORA nullable, porque en el flujo por usuario NO siempre hay customer
+        // nullable, porque en el flujo por usuario no siempre hay customer
         public Guid? CustomerId { get; set; }
         public Customer? Customer { get; set; }
 
-        // ✅ NUEVO: para asociar la orden al usuario autenticado (AspNetUser)
+        // para asociar la orden al usuario autenticado 
         public string? UserId { get; set; }
 
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

@@ -6,11 +6,7 @@ namespace Dsw2025Tpi.Application.Dtos
 {
     public static class OrderModel
     {
-        // ---------------------------
-        // 1) Crear orden (POST)
-        // ---------------------------
-
-        // Request que recibe el endpoint de creación de orden (modo viejo, con CustomerId)
+        // Request que recibe el endpoint de creación de orden (con CustomerId)
         public record OrderRequest(
             Guid CustomerId,
             string ShippingAddress,
@@ -18,7 +14,7 @@ namespace Dsw2025Tpi.Application.Dtos
             ICollection<OrderItemModel.OrderItemRequest> OrderItems
         );
 
-        // ⭐ NUEVO: Request para el endpoint que trabaja por USUARIO (sin CustomerId en el body)
+        // Request para el endpoint que trabaja con USUARIO (sin CustomerId)
         public record OrderFromUserRequest(
             string ShippingAddress,
             string BillingAddress,
@@ -27,7 +23,7 @@ namespace Dsw2025Tpi.Application.Dtos
 
         public record AddResponse(
         Guid Id,
-        Guid? CustomerId,   // 👈 ahora nullable
+        Guid? CustomerId,   //puede ser null
         string? ShippingAddress,
         string? BillingAddress,
         decimal TotalAmount,
@@ -37,28 +33,21 @@ namespace Dsw2025Tpi.Application.Dtos
 
         public record GetResponse(
             Guid Id,
-            Guid? CustomerId,   // 👈 ahora nullable también
+            Guid? CustomerId,   //nulleable
             decimal TotalAmount,
             DateTime? Date,
             ICollection<OrderItemModel.Response> OrderItems
         );
 
 
-        // ---------------------------
-        // 2) Listado para el dashboard (cards)
-        // ---------------------------
-
         public record OrderResponseEasy(
             Guid Id,
             string CustomerName,
             DateTime Date,
-            string Status,       // "Pending" | "Completed" | "Canceled"
+            string Status,       // "Pending", "Completed", "Canceled"
             decimal TotalAmount
         );
 
-        // ---------------------------
-        // 3) Filtros y paginación
-        // ---------------------------
 
         public record FilterOrder(
             string? Status,

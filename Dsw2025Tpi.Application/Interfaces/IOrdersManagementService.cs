@@ -14,13 +14,13 @@ namespace Dsw2025Tpi.Application.Interfaces
 
         Task<OrderModel.AddResponse> CreateOrder(OrderModel.OrderRequest request);
 
-        // NUEVO: crear orden para el usuario autenticado (sin CustomerId en el body)
+        //crear orden para el usuario autenticado (sin CustomerId)
         Task<OrderModel.AddResponse> CreateOrderForUserAsync(
             string userId,
             OrderModel.OrderFromUserRequest request
         );
 
-        // NUEVO: listado liviano con filtros + paginación (para dashboard)
+        //listado con filtros + paginación (para dashboard)
         Task<OrderModel.ResponsePagination> GetOrders(OrderModel.FilterOrder request);
     }
 }
